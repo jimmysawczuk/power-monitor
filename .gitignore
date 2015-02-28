@@ -1,0 +1,5 @@
+bin/
+pkg/
+
+# Utility script I use during development
+sync-to-gervais.bash
