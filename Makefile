@@ -17,6 +17,18 @@ define build
 	go install power-monitor
 endef
 
+define reset-deps
+	@echo 'Clearing src/github.com/*...'
+	rm -rf src/github.com
+endef
+
+define deps
+	@echo 'Getting dependencies'
+
+	@echo '  github.com/gin-gonic/gin'
+	go get -u github.com/gin-gonic/gin
+endef
+
 default: dev
 
 dev:
@@ -27,3 +39,8 @@ dev:
 fmt:
 	@$(reset)
 	@$(fmt)
+
+setup:
+	@$(reset-deps)
+	@$(deps)
+

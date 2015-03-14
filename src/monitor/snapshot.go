@@ -3,6 +3,7 @@ package monitor
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -44,6 +45,9 @@ type Snapshot struct {
 	// The current firmware version, model name
 	FirmwareVersion string `json:"firmwareVersion"`
 	ModelName       string `json:"modelName"`
+
+	// The timestamp on this snapshot
+	Timestamp time.Time `json:"timestamp"`
 
 	// Unused
 	LineInteraction string `json:"lineInteraction"`
@@ -90,9 +94,16 @@ func NewFromRawSnapshot(raw rawSnapshot) (s Snapshot) {
 	if v, found := raw.Get("Test Result"); found {
 		re := regexp.MustCompile(`(\w+) at ([\d\/\: ]+)`)
 
-		match := re.FindStringSubmatch(v)
-		s.LastTestResult.Event = match[1]
-		s.LastTestResult.Time, _ = time.Parse("2006/01/02 15:04:05", match[2])
+		if re.MatchString(v) {
+			match := re.FindStringSubmatch(v)
+			s.LastTestResult.Event = match[1]
+			s.LastTestResult.Time, _ = time.Parse("2006/01/02 15:04:05", match[2])
+		} else if strings.ToLower(v) == "in progress" {
+			s.LastTestResult.Event = "In Progress"
+			s.LastTestResult.Time = time.Now()
+		} else if strings.ToLower(v) == "unknown" {
+			s.LastTestResult.Event = "Unknown"
+		}
 	}
 
 	if v, found := raw.Get("Last Power Event"); found {
@@ -114,6 +125,8 @@ func NewFromRawSnapshot(raw rawSnapshot) (s Snapshot) {
 	if v, found := raw.Get("Line Interaction"); found {
 		fmt.Sscanf(v, "%s", &s.LineInteraction)
 	}
+
+	s.Timestamp = time.Now()
 
 	return s
 }

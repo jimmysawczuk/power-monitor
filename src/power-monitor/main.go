@@ -2,16 +2,15 @@ package main
 
 import (
 	"monitor"
+	"web"
 
 	"time"
 )
 
 func main() {
-	m := monitor.New(2 * time.Second)
+	m := monitor.New(5 * time.Second)
 	go m.Start()
 
-	for {
-		// nothing
-		time.Sleep(10 * time.Millisecond)
-	}
+	w := web.New(&m)
+	w.Run(":3000")
 }

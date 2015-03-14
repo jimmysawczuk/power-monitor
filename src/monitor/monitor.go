@@ -1,9 +1,6 @@
 package monitor
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -13,9 +10,10 @@ import (
 var dataRegexp *regexp.Regexp
 
 type Monitor struct {
-	interval time.Duration
-	engaged  bool
-	ticker   *time.Ticker
+	interval         time.Duration
+	engaged          bool
+	ticker           *time.Ticker
+	recent_snapshots []Snapshot
 }
 
 func init() {
@@ -53,8 +51,17 @@ func (m Monitor) Active() bool {
 	return m.engaged
 }
 
-func (m Monitor) Exec() {
-	log.Println("Logging")
+func (m *Monitor) Exec() {
+	// log.Println("Logging")
+	s := m.getUPSSnapshot()
+
+	m.recent_snapshots = append([]Snapshot{s}, m.recent_snapshots...)
+	if max_size, slice_size := int64(24*time.Hour/m.interval), int64(len(m.recent_snapshots)); slice_size > max_size {
+		m.recent_snapshots = m.recent_snapshots[0:max_size]
+	}
+}
+
+func (m Monitor) getUPSSnapshot() Snapshot {
 	cmd := exec.Command("pwrstat", "-status")
 
 	out, _ := cmd.Output()
@@ -68,6 +75,9 @@ func (m Monitor) Exec() {
 
 	snapshot := NewFromRawSnapshot(raw)
 
-	str, _ := json.MarshalIndent(snapshot, "", "   ")
-	fmt.Println(string(str))
+	return snapshot
+}
+
+func (m Monitor) GetRecentSnapshots() []Snapshot {
+	return m.recent_snapshots
 }

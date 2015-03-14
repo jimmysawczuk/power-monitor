@@ -1,5 +1,6 @@
 bin/
 pkg/
+src/github.com/
 
 # Utility script I use during development
 sync-to-gervais.bash
