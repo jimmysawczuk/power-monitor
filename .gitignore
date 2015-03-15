@@ -1,6 +1,7 @@
 bin/
 pkg/
 src/github.com/
+src/web/static/bower/
 
 # Utility script I use during development
 sync-to-gervais.bash

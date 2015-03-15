@@ -1,0 +1,24 @@
+{
+  "name": "power-monitor",
+  "version": "0.0.0",
+  "authors": [
+    "Jimmy Sawczuk <me@jimmysawczuk.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/web/static/bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.2",
+    "moment": "~2.9.0",
+    "highcharts": "~4.1.4",
+    "underscore": "~1.8.2",
+    "less": "~2.4.0"
+  }
+}

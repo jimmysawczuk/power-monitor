@@ -27,6 +27,12 @@ define deps
 
 	@echo '  github.com/gin-gonic/gin'
 	go get -u github.com/gin-gonic/gin
+
+	@echo '  github.com/gin-gonic/contrib/static'
+	go get -u github.com/gin-gonic/contrib/static
+
+	@echo '  github.com/gin-gonic/contrib/gzip'
+	go get -u github.com/gin-gonic/contrib/gzip
 endef
 
 default: dev
@@ -43,4 +49,5 @@ fmt:
 setup:
 	@$(reset-deps)
 	@$(deps)
+	@bower install
 
