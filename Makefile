@@ -20,6 +20,7 @@ endef
 define reset-deps
 	@echo 'Clearing src/github.com/*...'
 	rm -rf src/github.com
+	rm -rf src/web/static/bower
 endef
 
 define deps
