@@ -10,7 +10,7 @@ import (
 var dataRegexp *regexp.Regexp
 
 type Monitor struct {
-	interval         time.Duration
+	Interval         time.Duration
 	engaged          bool
 	ticker           *time.Ticker
 	recent_snapshots []Snapshot
@@ -22,14 +22,14 @@ func init() {
 
 func New(interval time.Duration) Monitor {
 	m := Monitor{
-		interval: interval,
+		Interval: interval,
 	}
 
 	return m
 }
 
 func (m *Monitor) Start() {
-	m.ticker = time.NewTicker(m.interval)
+	m.ticker = time.NewTicker(m.Interval)
 	m.engaged = true
 
 	go func() {
@@ -56,7 +56,7 @@ func (m *Monitor) Exec() {
 	s := m.getUPSSnapshot()
 
 	m.recent_snapshots = append([]Snapshot{s}, m.recent_snapshots...)
-	if max_size, slice_size := int64(24*time.Hour/m.interval), int64(len(m.recent_snapshots)); slice_size > max_size {
+	if max_size, slice_size := int64(24*time.Hour/m.Interval), int64(len(m.recent_snapshots)); slice_size > max_size {
 		m.recent_snapshots = m.recent_snapshots[0:max_size]
 	}
 }

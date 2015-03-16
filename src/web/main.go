@@ -29,7 +29,9 @@ func New(m *monitor.Monitor) *gin.Engine {
 }
 
 func getIndex(c *gin.Context) {
-	c.HTML(200, "index.html", gin.H{})
+	c.HTML(200, "index.html", gin.H{
+		"Interval": int64(active_monitor.Interval / 1e6),
+	})
 }
 
 func getSnapshots(c *gin.Context) {

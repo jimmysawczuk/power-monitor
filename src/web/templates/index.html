@@ -57,6 +57,8 @@
 	<script type="text/javascript" src="/bower/moment/moment.js"></script>
 	<script type="text/javascript" src="/bower/less/dist/less.min.js"></script>
 	<script type="text/javascript">
+		var Interval = {{ .Interval }};
+
 		$(document).ready(function()
 		{
 			window.setInterval(update, 30 * 1000);
@@ -67,6 +69,16 @@
 		{
 			$.get('/api/snapshots', function(snapshots)
 			{
+				if (snapshots === null)
+				{
+					return;
+				}
+
+				_.each(snapshots, function(snapshot, i)
+				{
+					snapshots[i].duration = +moment() - +moment(snapshot.timestamp);
+				});
+
 				updateModel(snapshots[0]);
 
 				updateBatteryRemaining(snapshots[0]);
@@ -78,6 +90,13 @@
 				drawLoadChart(snapshots);
 				drawRemainingRuntimeChart(snapshots);
 			}, 'json');
+		}
+
+		function humanizeDuration(d)
+		{
+			var s = moment.duration(-d).humanize(true);
+			s = s[0].toUpperCase() + s.substr(1);
+			return s;
 		}
 
 		function updateModel(snapshot)
@@ -111,21 +130,9 @@
 				xAxis: {
 					labels: {
 						formatter: function() {
-							if (typeof data[this.value] != "undefined")
-							{
-								return data[this.value][0].fromNow();
-							}
-							else
-							{
-								return null;
-							}
+							return humanizeDuration(this.value);
 						}
-					},
-					type: "category",
-					minTickInterval: (function(data)
-					{
-						return Math.floor(data.length / 8);
-					})(data)
+					}
 				},
 
 				legend: {
@@ -147,7 +154,7 @@
 			var data = [];
 			_.each(snapshots, function(snapshot)
 			{
-				data.push([moment(snapshot.timestamp), snapshot.batteryRemaining]);
+				data.push([snapshot.duration, snapshot.batteryRemaining]);
 			});
 
 			$('#battery-remaining-chart').highcharts($.extend(true, getDefaultChartOptions(data), {
@@ -169,7 +176,7 @@
 
 				tooltip: {
 					formatter: function() {
-						return '<b>' + data[this.x][0].fromNow() + ':</b> ' + (100 * this.y) + '%';
+						return '<b>' + humanizeDuration(this.x) + ':</b> ' + (100 * this.y) + '%';
 					}
 				},
 
@@ -185,7 +192,7 @@
 			var data = [];
 			_.each(snapshots, function(snapshot)
 			{
-				data.push([moment(snapshot.timestamp), snapshot.load]);
+				data.push([snapshot.duration, snapshot.load]);
 			});
 
 			$('#load-chart').highcharts($.extend(true, getDefaultChartOptions(data), {
@@ -206,7 +213,7 @@
 
 				tooltip: {
 					formatter: function() {
-						return '<b>' + data[this.x][0].fromNow() + ':</b> ' + this.y + ' W';
+						return '<b>' + humanizeDuration(this.x) + ':</b> ' + this.y + ' W';
 					}
 				},
 
@@ -222,7 +229,7 @@
 			var data = [];
 			_.each(snapshots, function(snapshot)
 			{
-				data.push([moment(snapshot.timestamp), snapshot.remainingRuntime]);
+				data.push([snapshot.duration, snapshot.remainingRuntime]);
 			});
 
 			$('#remaining-runtime-chart').highcharts($.extend(true, getDefaultChartOptions(data), {
@@ -242,7 +249,7 @@
 
 				tooltip: {
 					formatter: function() {
-						return '<b>' + data[this.x][0].fromNow() + ':</b> ' + (this.y) + ' min.';
+						return '<b>' + humanizeDuration(this.x) + ':</b> ' + (this.y) + ' min.';
 					}
 				},
 
