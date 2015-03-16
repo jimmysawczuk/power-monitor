@@ -14,7 +14,7 @@ func New(m *monitor.Monitor) *gin.Engine {
 
 	active_monitor = m
 
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
