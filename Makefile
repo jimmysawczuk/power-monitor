@@ -15,6 +15,8 @@ define build
 	@echo 'Building...'
 
 	go install power-monitor
+	scm-status -out=REVISION.json
+	cp REVISION.json src/web/static/
 endef
 
 define reset-deps

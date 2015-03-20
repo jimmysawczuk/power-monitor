@@ -50,12 +50,20 @@
 		</div>
 	</div>
 
+	<footer class="footer">
+		<div class="container">
+			<div id="last-updated" class="col-sm-6 text-muted"></div>
+			<div id="revision" class="col-sm-6 text-muted"></div>
+		</div>
+	</footer>
+
 	<script type="text/javascript" src="/bower/underscore/underscore-min.js"></script>
 	<script type="text/javascript" src="/bower/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="/bower/highcharts/highcharts.js"></script>
 	<script type="text/javascript" src="/bower/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/bower/moment/moment.js"></script>
 	<script type="text/javascript" src="/bower/less/dist/less.min.js"></script>
+	<script type="text/javascript" src="/bower/timeago/jquery.timeago.js"></script>
 	<script type="text/javascript">
 		var Interval = {{ .Interval }};
 
@@ -63,6 +71,16 @@
 		{
 			window.setInterval(update, 30 * 1000);
 			update();
+
+			$.get('/REVISION.json', function(revision)
+			{
+				$('#revision')
+					.append("rev. " + revision.hex.short)
+					.append(" &middot; ")
+					.append($('<time />', {datetime: revision.commit_date.iso8601}).timeago());
+
+				$('.timeago').timeago();
+			}, 'json');
 		});
 
 		function update()
@@ -99,6 +117,8 @@
 				drawBatteryRemainingChart(snapshots);
 				drawLoadChart(snapshots);
 				drawRemainingRuntimeChart(snapshots);
+
+				$('#last-updated').html('Last updated ').append($('<time />', {datetime: snapshots[0].timestamp}).timeago());
 			}, 'json');
 		}
 

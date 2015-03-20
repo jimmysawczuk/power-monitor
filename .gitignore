@@ -2,6 +2,7 @@ bin/
 pkg/
 src/github.com/
 src/web/static/bower/
+REVISION.json
 
 # Utility script I use during development
 sync-to-gervais.bash

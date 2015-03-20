@@ -19,6 +19,7 @@
     "moment": "~2.9.0",
     "highcharts": "~4.1.4",
     "underscore": "~1.8.2",
-    "less": "~2.4.0"
+    "less": "~2.4.0",
+    "timeago": "~1.4.1"
   }
 }
