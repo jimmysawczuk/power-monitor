@@ -79,6 +79,16 @@
 					snapshots[i].duration = +moment() - +moment(snapshot.timestamp);
 				});
 
+				snapshots = _.filter(snapshots, function(snapshot)
+				{
+					var res = (
+						snapshot.duration < 30 * 60 * 1000 ||
+						+moment(snapshot.timestamp) % (10 * 60 * 1000) < Interval
+					);
+
+					return res;
+				});
+
 				updateModel(snapshots[0]);
 
 				updateBatteryRemaining(snapshots[0]);
