@@ -52,8 +52,14 @@
 
 	<footer class="footer">
 		<div class="container">
-			<div id="last-updated" class="col-sm-6 text-muted"></div>
-			<div id="revision" class="col-sm-6 text-muted"></div>
+			<div class="col-sm-6 bumper">
+				<span id="last-updated" class="text-muted"></span>
+				<span class="divider">&middot;</span>
+				<span id="started" class="text-muted"></span>
+			</div>
+			<div class="col-sm-6 text-right bumper">
+				<span id="revision" class="text-muted"></span>
+			</div>
 		</div>
 	</footer>
 
@@ -66,11 +72,14 @@
 	<script type="text/javascript" src="/bower/timeago/jquery.timeago.js"></script>
 	<script type="text/javascript">
 		var Interval = {{ .Interval }};
+		var StartTime = {{ .StartTime }};
 
 		$(document).ready(function()
 		{
 			window.setInterval(update, 30 * 1000);
 			update();
+
+			$('#started').append("Monitoring started ").append($('<time />', {datetime: StartTime}).timeago());
 
 			$.get('/REVISION.json', function(revision)
 			{

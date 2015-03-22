@@ -5,9 +5,11 @@ import (
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"monitor"
+	"time"
 )
 
 var active_monitor *monitor.Monitor
+var start_time time.Time
 
 func New(m *monitor.Monitor) *gin.Engine {
 	_ = gzip.Gzip
@@ -25,12 +27,15 @@ func New(m *monitor.Monitor) *gin.Engine {
 
 	r.Use(static.Serve("/", static.LocalFile("src/web/static/", false)))
 
+	start_time = time.Now()
+
 	return r
 }
 
 func getIndex(c *gin.Context) {
 	c.HTML(200, "index.html", gin.H{
-		"Interval": int64(active_monitor.Interval / 1e6),
+		"StartTime": start_time,
+		"Interval":  int64(active_monitor.Interval / 1e6),
 	})
 }
 
