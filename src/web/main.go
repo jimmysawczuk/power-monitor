@@ -40,5 +40,15 @@ func getIndex(c *gin.Context) {
 }
 
 func getSnapshots(c *gin.Context) {
-	c.JSON(200, active_monitor.GetRecentSnapshots())
+	now := time.Now()
+
+	recent := active_monitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
+		dur := now.Sub(s.Timestamp)
+
+		return ((dur < time.Duration(5*time.Minute) && s.Timestamp.UnixNano()%int64(15*time.Second) < int64(active_monitor.Interval)) ||
+			(dur < time.Duration(60*time.Minute) && s.Timestamp.UnixNano()%int64(5*time.Minute) < int64(active_monitor.Interval)) ||
+			s.Timestamp.UnixNano()%int64(15*time.Minute) < int64(active_monitor.Interval))
+	})
+
+	c.JSON(200, recent)
 }

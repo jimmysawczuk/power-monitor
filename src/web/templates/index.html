@@ -52,12 +52,12 @@
 
 	<footer class="footer">
 		<div class="container">
-			<div class="col-sm-6 bumper">
+			<div class="col-md-6 bumper">
 				<span id="last-updated" class="text-muted"></span>
 				<span class="divider">&middot;</span>
 				<span id="started" class="text-muted"></span>
 			</div>
-			<div class="col-sm-6 text-right bumper">
+			<div class="col-md-6 text-right bumper">
 				<span id="revision" class="text-muted"></span>
 			</div>
 		</div>
@@ -96,25 +96,26 @@
 		{
 			$.get('/api/snapshots', function(snapshots)
 			{
-				if (snapshots === null)
+				if (snapshots === null || snapshots.length == 0)
 				{
 					return;
 				}
 
+				var now = +moment();
 				_.each(snapshots, function(snapshot, i)
 				{
-					snapshots[i].duration = +moment() - +moment(snapshot.timestamp);
+					snapshots[i].duration = now - +moment(snapshot.timestamp);
 				});
 
-				snapshots = _.filter(snapshots, function(snapshot)
-				{
-					var res = (
-						snapshot.duration < 30 * 60 * 1000 ||
-						+moment(snapshot.timestamp) % (10 * 60 * 1000) < Interval
-					);
+				// snapshots = _.filter(snapshots, function(snapshot)
+				// {
+				// 	var res = (
+				// 		snapshot.duration < 30 * 60 * 1000 ||
+				// 		+moment(snapshot.timestamp) % (10 * 60 * 1000) < Interval
+				// 	);
 
-					return res;
-				});
+				// 	return res;
+				// });
 
 				updateModel(snapshots[0]);
 

@@ -78,6 +78,6 @@ func (m Monitor) getUPSSnapshot() Snapshot {
 	return snapshot
 }
 
-func (m Monitor) GetRecentSnapshots() []Snapshot {
-	return m.recent_snapshots
+func (m Monitor) GetRecentSnapshots() SnapshotSlice {
+	return SnapshotSlice(m.recent_snapshots)
 }
