@@ -1,0 +1,25 @@
+{
+  "name": "power-monitor",
+  "version": "1.0.0",
+  "description": "![Screenshot](http://i.imgur.com/WOTcKh3.png)",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jimmysawczuk/power-monitor.git"
+  },
+  "author": "Jimmy Sawczuk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jimmysawczuk/power-monitor/issues"
+  },
+  "homepage": "https://github.com/jimmysawczuk/power-monitor",
+  "devDependencies": {
+    "bower": "^1.4.0",
+    "cssmin": "^0.4.3",
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-cssmin": "^0.12.2",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-uglify": "^0.8.1",
+    "less": "^2.4.0"
+  }
+}

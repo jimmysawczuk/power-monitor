@@ -36,6 +36,7 @@ func getIndex(c *gin.Context) {
 	c.HTML(200, "index.html", gin.H{
 		"StartTime": start_time,
 		"Interval":  int64(active_monitor.Interval / 1e6),
+		"Mode":      gin.Mode(),
 	})
 }
 
@@ -45,8 +46,8 @@ func getSnapshots(c *gin.Context) {
 	recent := active_monitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
 		dur := now.Sub(s.Timestamp)
 
-		return ((dur < time.Duration(5*time.Minute) && s.Timestamp.UnixNano()%int64(15*time.Second) < int64(active_monitor.Interval)) ||
-			(dur < time.Duration(60*time.Minute) && s.Timestamp.UnixNano()%int64(5*time.Minute) < int64(active_monitor.Interval)) ||
+		return ((dur < time.Duration(5*time.Minute) && s.Timestamp.UnixNano()%int64(10*time.Second) < int64(active_monitor.Interval)) ||
+			(dur < time.Duration(2*time.Hour) && s.Timestamp.UnixNano()%int64(5*time.Minute) < int64(active_monitor.Interval)) ||
 			s.Timestamp.UnixNano()%int64(15*time.Minute) < int64(active_monitor.Interval))
 	})
 

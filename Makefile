@@ -1,4 +1,5 @@
-GOPATH := ${PWD}
+export PATH := $(shell npm bin):$(PATH)
+export GOPATH := ${PWD}
 
 define reset
 	@rm -rf bin pkg
@@ -19,10 +20,18 @@ define build
 	cp REVISION.json src/web/static/
 endef
 
+define release
+	@echo 'Packaging assets for release...'
+	grunt
+endef
+
 define reset-deps
-	@echo 'Clearing src/github.com/*...'
+	@echo 'Clearing src/github.com/*, node_modules/*, cached web resources...'
 	rm -rf src/github.com
+	rm -rf node_modules
 	rm -rf src/web/static/bower
+	rm -rf src/web/static/css
+	rm -rf src/web/static/js/bin
 endef
 
 define deps
@@ -40,6 +49,12 @@ endef
 
 default: dev
 
+release:
+	@$(reset)
+	@$(fmt)
+	@$(release)
+	@$(build)
+
 dev:
 	@$(reset)
 	@$(fmt)
@@ -52,5 +67,5 @@ fmt:
 setup:
 	@$(reset-deps)
 	@$(deps)
+	@npm install
 	@bower install
-
