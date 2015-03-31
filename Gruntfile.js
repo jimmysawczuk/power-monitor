@@ -2,6 +2,12 @@ module.exports = function(grunt)
 {
 	grunt.initConfig({
 		concat: {
+			options: {
+				process: function(src, filepath)
+				{
+					return "/*! " + filepath + " */\n" + src + "\n\n";
+				}
+			},
 			app: {
 				src: [
 					'src/web/static/bower/underscore/underscore-min.js',
@@ -12,14 +18,7 @@ module.exports = function(grunt)
 					'src/web/static/bower/timeago/jquery.timeago.js',
 					'src/web/static/js/src/app.js'
 				],
-				dest: 'src/web/static/js/bin/app.js'
-			}
-		},
-
-		uglify: {
-			app: {
-				src: ['src/web/static/js/bin/app.js'],
-				dest: 'src/web/static/js/bin/app.min.js'
+				dest: 'src/web/static/js/bin/app.js',
 			}
 		},
 
@@ -39,9 +38,8 @@ module.exports = function(grunt)
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-	grunt.registerTask('default', ['less', 'cssmin', 'concat', 'uglify']);
+	grunt.registerTask('default', ['less', 'cssmin', 'concat']);
 };
