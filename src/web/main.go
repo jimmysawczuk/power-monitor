@@ -46,10 +46,19 @@ func getSnapshots(c *gin.Context) {
 	recent := active_monitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
 		dur := now.Sub(s.Timestamp)
 
-		return ((dur < time.Duration(5*time.Minute) && s.Timestamp.UnixNano()%int64(10*time.Second) < int64(active_monitor.Interval)) ||
-			(dur < time.Duration(2*time.Hour) && s.Timestamp.UnixNano()%int64(5*time.Minute) < int64(active_monitor.Interval)) ||
-			s.Timestamp.UnixNano()%int64(15*time.Minute) < int64(active_monitor.Interval))
+		return isTimestampInLast(s.Timestamp, now, 60*time.Second) ||
+			isSignificantTimestamp(s.Timestamp, dur, 5*time.Minute, 10*time.Second) ||
+			isSignificantTimestamp(s.Timestamp, dur, 2*time.Hour, 5*time.Minute) ||
+			isSignificantTimestamp(s.Timestamp, dur, 0, 15*time.Minute)
 	})
 
 	c.JSON(200, recent)
+}
+
+func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
+	return s.Sub(now) < dur
+}
+
+func isSignificantTimestamp(s time.Time, s_dur time.Duration, cutoff time.Duration, frequency time.Duration) bool {
+	return (cutoff == 0 || s_dur < cutoff) && s.UnixNano()%int64(frequency) < int64(active_monitor.Interval)
 }
