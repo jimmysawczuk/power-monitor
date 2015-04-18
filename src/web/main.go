@@ -49,7 +49,8 @@ func getSnapshots(c *gin.Context) {
 		return isTimestampInLast(s.Timestamp, now, 60*time.Second) ||
 			isSignificantTimestamp(s.Timestamp, dur, 5*time.Minute, 10*time.Second) ||
 			isSignificantTimestamp(s.Timestamp, dur, 2*time.Hour, 5*time.Minute) ||
-			isSignificantTimestamp(s.Timestamp, dur, 0, 15*time.Minute)
+			isSignificantTimestamp(s.Timestamp, dur, 24*time.Hour, 15*time.Minute) ||
+			isSignificantTimestamp(s.Timestamp, dur, 48*time.Hour, 30*time.Minute)
 	})
 
 	c.JSON(200, recent)
