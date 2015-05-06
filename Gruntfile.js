@@ -6,7 +6,8 @@ module.exports = function(grunt)
 				process: function(src, filepath)
 				{
 					return "/*! " + filepath + " */\n" + src + "\n\n";
-				}
+				},
+				stripBanners: true
 			},
 			app: {
 				src: [
@@ -19,6 +20,20 @@ module.exports = function(grunt)
 					'src/web/static/js/src/app.js'
 				],
 				dest: 'src/web/static/js/bin/app.js',
+			}
+		},
+
+		uglify: {
+			app: {
+				options: {
+					preserveComments: "some",
+					compress: false,
+					mangle: false
+				},
+				src: [
+					'src/web/static/js/bin/app.js',
+				],
+				dest: 'src/web/static/js/bin/app.min.js'
 			}
 		},
 
@@ -38,8 +53,9 @@ module.exports = function(grunt)
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-	grunt.registerTask('default', ['less', 'cssmin', 'concat']);
+	grunt.registerTask('default', ['less', 'cssmin', 'concat', 'uglify']);
 };
