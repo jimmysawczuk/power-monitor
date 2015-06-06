@@ -46,8 +46,8 @@ func getSnapshots(c *gin.Context) {
 	recent := active_monitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
 		res := isTimestampInLast(s.Timestamp, now, 60*time.Second) ||
 			(isTimestampInLast(s.Timestamp, now, 5*time.Minute) && isSignificantTimestamp(s.Timestamp, 10*time.Second)) ||
-			(isTimestampInLast(s.Timestamp, now, 2*time.Hour) && isSignificantTimestamp(s.Timestamp, 10*time.Minute)) ||
-			(isTimestampInLast(s.Timestamp, now, 24*time.Hour) && isSignificantTimestamp(s.Timestamp, 30*time.Minute))
+			(isTimestampInLast(s.Timestamp, now, 2*time.Hour) && isSignificantTimestamp(s.Timestamp, 5*time.Minute)) ||
+			(isTimestampInLast(s.Timestamp, now, 48*time.Hour) && isSignificantTimestamp(s.Timestamp, 30*time.Minute))
 
 		return res
 	})
