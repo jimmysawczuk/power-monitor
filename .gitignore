@@ -1,6 +1,8 @@
 bin/
 pkg/
 src/github.com/
+src/golang.org/
+src/gopkg.in/
 src/web/static/bower/
 REVISION.json
 node_modules/

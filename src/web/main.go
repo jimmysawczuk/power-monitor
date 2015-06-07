@@ -4,7 +4,10 @@ import (
 	"github.com/gin-gonic/contrib/gzip"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
+
 	"monitor"
+
+	"strconv"
 	"time"
 )
 
@@ -23,7 +26,7 @@ func New(m *monitor.Monitor) *gin.Engine {
 	r.LoadHTMLGlob("src/web/templates/*")
 
 	r.GET("/", getIndex)
-	r.GET("/api/snapshots", getSnapshots) //, gzip.Gzip(gzip.DefaultCompression))
+	r.GET("/api/snapshots", getSnapshots)
 
 	r.Use(static.Serve("/", static.LocalFile("src/web/static/", false)))
 
@@ -51,6 +54,12 @@ func getSnapshots(c *gin.Context) {
 
 		return res
 	})
+
+	limit_str := c.DefaultQuery("limit", "0")
+	limit, _ := strconv.ParseInt(limit_str, 10, 64)
+	if limit > 0 && limit < int64(len(recent)) {
+		recent = recent[0:limit]
+	}
 
 	c.JSON(200, recent)
 }
