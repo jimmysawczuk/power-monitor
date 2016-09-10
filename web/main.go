@@ -22,7 +22,7 @@ func New(m *monitor.Monitor) *gin.Engine {
 
 	r := gin.Default()
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
-	r.LoadHTMLGlob("src/web/templates/*")
+	r.LoadHTMLGlob("web/templates/*")
 
 	r.GET("/", getIndex)
 	r.GET("/api/snapshots", getSnapshots)
