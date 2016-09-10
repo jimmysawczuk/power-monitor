@@ -4,8 +4,7 @@ import (
 	"github.com/gin-gonic/contrib/gzip"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
-
-	"monitor"
+	"github.com/jimmysawczuk/power-monitor/monitor"
 
 	"strconv"
 	"time"

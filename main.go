@@ -1,8 +1,8 @@
 package main
 
 import (
-	"monitor"
-	"web"
+	"github.com/jimmysawczuk/power-monitor/monitor"
+	"github.com/jimmysawczuk/power-monitor/web"
 
 	"time"
 )

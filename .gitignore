@@ -1,13 +1,8 @@
-bin/
-pkg/
-src/github.com/
-src/golang.org/
-src/gopkg.in/
-src/web/static/bower/
+web/static/bower/
 REVISION.json
 node_modules/
-src/web/static/css/
-src/web/static/js/
+web/static/css/
+web/static/js/
 
 # Utility script I use during development
 sync-to-gervais.bash
