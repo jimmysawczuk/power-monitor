@@ -2,7 +2,7 @@ web/static/bower/
 REVISION.json
 node_modules/
 web/static/css/
-web/static/js/
+web/static/js/bin/
 
 # Utility script I use during development
 sync-to-gervais.bash
