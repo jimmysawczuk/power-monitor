@@ -140,7 +140,7 @@ func NewFromRawSnapshot(raw rawSnapshot) (s Snapshot) {
 		fmt.Sscanf(v, "%s", &s.LineInteraction)
 	}
 
-	s.Timestamp = time.Now()
+	s.Timestamp = time.Now().Round(time.Second)
 
 	return s
 }
