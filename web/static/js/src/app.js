@@ -214,7 +214,7 @@ function drawUtilityVoltageChart(snapshots)
 			endOnTick: true,
 			labels: {
 				formatter: function() {
-					return (this.value) + " min";
+					return (this.value) + " V";
 				}
 			},
 			min: 0
@@ -222,7 +222,7 @@ function drawUtilityVoltageChart(snapshots)
 
 		tooltip: {
 			formatter: function() {
-				return '<b>' + humanizeDuration(this.x) + ':</b> ' + (this.y) + ' min.';
+				return '<b>' + humanizeDuration(this.x) + ':</b> ' + (this.y) + ' V';
 			}
 		},
 
