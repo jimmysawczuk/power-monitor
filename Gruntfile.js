@@ -11,15 +11,15 @@ module.exports = function(grunt)
 			},
 			app: {
 				src: [
-					'src/web/static/bower/underscore/underscore-min.js',
-					'src/web/static/bower/jquery/dist/jquery.min.js',
-					'src/web/static/bower/highcharts/highcharts.js',
-					'src/web/static/bower/bootstrap/dist/js/bootstrap.min.js',
-					'src/web/static/bower/moment/moment.js',
-					'src/web/static/bower/timeago/jquery.timeago.js',
-					'src/web/static/js/src/app.js'
+					'web/static/bower/underscore/underscore-min.js',
+					'web/static/bower/jquery/dist/jquery.min.js',
+					'web/static/bower/highcharts/highcharts.js',
+					'web/static/bower/bootstrap/dist/js/bootstrap.min.js',
+					'web/static/bower/moment/moment.js',
+					'web/static/bower/timeago/jquery.timeago.js',
+					'web/static/js/app.js'
 				],
-				dest: 'src/web/static/js/bin/app.js',
+				dest: 'web/static/js/bin/app.js',
 			}
 		},
 
@@ -31,23 +31,23 @@ module.exports = function(grunt)
 					mangle: false
 				},
 				src: [
-					'src/web/static/js/bin/app.js',
+					'web/static/js/bin/app.js',
 				],
-				dest: 'src/web/static/js/bin/app.min.js'
+				dest: 'web/static/js/bin/app.min.js'
 			}
 		},
 
 		less: {
 			style: {
-				src: ['src/web/static/less/style.less'],
-				dest: 'src/web/static/css/style.css'
+				src: ['web/static/less/style.less'],
+				dest: 'web/static/css/style.css'
 			}
 		},
 
 		cssmin: {
 			style: {
-				src: ['src/web/static/css/style.css'],
-				dest: 'src/web/static/css/style.min.css'
+				src: ['web/static/css/style.css'],
+				dest: 'web/static/css/style.min.css'
 			}
 		}
 	});
