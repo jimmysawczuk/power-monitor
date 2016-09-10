@@ -17,7 +17,7 @@ module.exports = function(grunt)
 					'web/static/bower/bootstrap/dist/js/bootstrap.min.js',
 					'web/static/bower/moment/moment.js',
 					'web/static/bower/timeago/jquery.timeago.js',
-					'web/static/js/app.js'
+					'web/static/js/src/app.js'
 				],
 				dest: 'web/static/js/bin/app.js',
 			}

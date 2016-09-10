@@ -5,7 +5,7 @@
 ## Setting up
 You'll need to set up [PowerPanel for Linux](http://www.cyberpowersystems.com/products/management-software/ppl.html) on a server that's connected via USB to a CyberPower UPS.
 
-You'll also need Go >= 1.4 and a globally available version of [bower](http://bower.io/). 
+You'll also need Go >= 1.4 and a globally available version of [bower](http://bower.io/).
 
 After cloning this repository:
 
@@ -23,7 +23,7 @@ Finally, open a browser and navigate to `http://your-server:3000/` and you shoul
 ```
 The MIT License (MIT)
 
-Copyright (c) 2015 Jimmy Sawczuk
+Copyright (c) 2015-2016 Jimmy Sawczuk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
