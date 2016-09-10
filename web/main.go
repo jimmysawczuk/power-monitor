@@ -27,7 +27,7 @@ func New(m *monitor.Monitor) *gin.Engine {
 	r.GET("/", getIndex)
 	r.GET("/api/snapshots", getSnapshots)
 
-	r.Use(static.Serve("/", static.LocalFile("src/web/static/", false)))
+	r.Use(static.Serve("/", static.LocalFile("web/static/", false)))
 
 	start_time = time.Now()
 
