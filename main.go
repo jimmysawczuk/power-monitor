@@ -4,6 +4,8 @@ import (
 	"github.com/jimmysawczuk/power-monitor/monitor"
 	"github.com/jimmysawczuk/power-monitor/web"
 
+	"log"
+	"net/http"
 	"time"
 )
 
@@ -11,6 +13,7 @@ func main() {
 	m := monitor.New(5 * time.Second)
 	go m.Start()
 
-	w := web.New(&m)
-	w.Run(":3000")
+	http.Handle("/", web.GetRouter(&m))
+	log.Println("Starting webserver")
+	http.ListenAndServe(":3000", nil)
 }

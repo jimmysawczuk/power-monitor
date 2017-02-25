@@ -1,51 +1,57 @@
 package web
 
 import (
-	"github.com/gin-gonic/contrib/gzip"
-	"github.com/gin-gonic/contrib/static"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 	"github.com/jimmysawczuk/power-monitor/monitor"
 
+	"encoding/json"
+	"html/template"
+	// "log"
+	"net/http"
 	"strconv"
 	"time"
 )
 
-var active_monitor *monitor.Monitor
-var start_time time.Time
+var activeMonitor *monitor.Monitor
+var startTime time.Time
+var indexTmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
 
-func New(m *monitor.Monitor) *gin.Engine {
-	_ = gzip.Gzip
+func GetRouter(m *monitor.Monitor) *mux.Router {
+	activeMonitor = m
+	startTime = time.Now()
 
-	active_monitor = m
-
-	gin.SetMode(gin.ReleaseMode)
-
-	r := gin.Default()
-	r.Use(gzip.Gzip(gzip.DefaultCompression))
-	r.LoadHTMLGlob("web/templates/*")
-
-	r.GET("/", getIndex)
-	r.GET("/api/snapshots", getSnapshots)
-
-	r.Use(static.Serve("/", static.LocalFile("web/static/", false)))
-
-	start_time = time.Now()
-
+	r := mux.NewRouter()
+	r.HandleFunc("/", getIndex)
+	r.HandleFunc("/api/snapshots", getSnapshots)
+	r.PathPrefix("/").HandlerFunc(getStaticFile)
 	return r
 }
+func getStaticFile(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	by, err := Asset("web/static" + path)
+	if err != nil {
+		w.WriteHeader(404)
+		return
+	}
+	w.WriteHeader(200)
+	w.Write(by)
+}
 
-func getIndex(c *gin.Context) {
-	c.HTML(200, "index.html", gin.H{
-		"StartTime": start_time,
-		"Interval":  int64(active_monitor.Interval / 1e6),
-		"Mode":      gin.Mode(),
+func getIndex(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(200)
+	indexTmpl.Execute(w, map[string]interface{}{
+		"StartTime": startTime,
+		"Interval":  int64(activeMonitor.Interval / 1e6),
+		"Mode":      "Release",
 	})
 }
 
-func getSnapshots(c *gin.Context) {
+func getSnapshots(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
 	now := time.Now()
 
-	recent := active_monitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
+	recent := activeMonitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
 		res := isTimestampInLast(s.Timestamp, now, 60*time.Second) ||
 			(isTimestampInLast(s.Timestamp, now, 5*time.Minute) && isSignificantTimestamp(s.Timestamp, 10*time.Second)) ||
 			(isTimestampInLast(s.Timestamp, now, 2*time.Hour) && isSignificantTimestamp(s.Timestamp, 5*time.Minute)) ||
@@ -54,13 +60,16 @@ func getSnapshots(c *gin.Context) {
 		return res
 	})
 
-	limit_str := c.DefaultQuery("limit", "0")
+	limit_str := r.FormValue("limit")
 	limit, _ := strconv.ParseInt(limit_str, 10, 64)
 	if limit > 0 && limit < int64(len(recent)) {
 		recent = recent[0:limit]
 	}
 
-	c.JSON(200, recent)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	by, _ := json.Marshal(recent)
+	w.Write(by)
 }
 
 func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
@@ -68,5 +77,5 @@ func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
 }
 
 func isSignificantTimestamp(s time.Time, frequency time.Duration) bool {
-	return s.UnixNano()%int64(frequency) < int64(active_monitor.Interval)
+	return s.UnixNano()%int64(frequency) < int64(activeMonitor.Interval)
 }

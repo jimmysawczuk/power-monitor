@@ -25,7 +25,9 @@ function update()
 		drawRemainingRuntimeChart(snapshots);
 		drawUtilityVoltageChart(snapshots);
 
-		$('#last-updated').html('Last updated ').append($('<time />', {datetime: snapshots[0].timestamp}).timeago());
+		$('#last-updated').html('Last updated ').append($('<time />', {datetime: snapshots[0].timestamp}));
+
+		$('time').timeago();
 	}, 'json');
 }
 
@@ -235,7 +237,9 @@ function drawUtilityVoltageChart(snapshots)
 
 function setMonitoringStartTime()
 {
-	$('#started').append("Monitoring started ").append($('<time />', {datetime: StartTime}).timeago());
+	$('#started').append("Monitoring started ").append($('<time />', {datetime: StartTime}));
+
+	$('time').timeago();
 }
 
 function setRevision()
@@ -245,8 +249,9 @@ function setRevision()
 		$('#revision')
 			.append("rev. " + revision.hex.short)
 			.append(" &middot; ")
-			.append($('<time />', {datetime: revision.commit_date.iso8601}).timeago());
+			.append($('<time />', {datetime: revision.commit_date.iso8601}));
 
-		$('.timeago').timeago();
+		$('time').timeago();
+
 	}, 'json');
 }
