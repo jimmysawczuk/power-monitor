@@ -6,8 +6,8 @@ import (
 
 	"encoding/json"
 	"html/template"
-	// "log"
 	"net/http"
+	"path"
 	"strconv"
 	"time"
 )
@@ -27,12 +27,19 @@ func GetRouter(m *monitor.Monitor) *mux.Router {
 	return r
 }
 func getStaticFile(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	by, err := Asset("web/static" + path)
+	by, err := Asset("web/static" + r.URL.Path)
 	if err != nil {
 		w.WriteHeader(404)
 		return
 	}
+
+	switch path.Ext(r.URL.Path) {
+	case ".css":
+		w.Header().Set("Content-Type", "text/css")
+	case ".js":
+		w.Header().Set("Content-Type", "application/javascript")
+	}
+
 	w.WriteHeader(200)
 	w.Write(by)
 }
