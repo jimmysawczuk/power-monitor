@@ -111,18 +111,20 @@ func NewFromRawSnapshot(raw rawSnapshot) (s Snapshot) {
 	if v, found := raw.Get("Last Power Event"); found {
 		re := regexp.MustCompile(`([\w ]+) at ([\d\/\: ]+)( ?for (\d+) ([\w\.]+))?`)
 
-		match := re.FindStringSubmatch(v)
-		s.LastPowerEvent.Event = match[1]
-		s.LastPowerEvent.Time, _ = time.Parse("2006/01/02 15:04:05", strings.TrimSpace(match[2]))
+		if re.MatchString(v) {
+			match := re.FindStringSubmatch(v)
+			s.LastPowerEvent.Event = match[1]
+			s.LastPowerEvent.Time, _ = time.Parse("2006/01/02 15:04:05", strings.TrimSpace(match[2]))
 
-		if match[4] != "" {
-			dur, err := strconv.ParseInt(match[4], 10, 64)
-			if err == nil {
-				switch match[5] {
-				case "sec.":
-					s.LastPowerEvent.Duration = time.Duration(dur) * time.Second
-				case "min.":
-					s.LastPowerEvent.Duration = time.Duration(dur) * time.Minute
+			if match[4] != "" {
+				dur, err := strconv.ParseInt(match[4], 10, 64)
+				if err == nil {
+					switch match[5] {
+					case "sec.":
+						s.LastPowerEvent.Duration = time.Duration(dur) * time.Second
+					case "min.":
+						s.LastPowerEvent.Duration = time.Duration(dur) * time.Minute
+					}
 				}
 			}
 		}
