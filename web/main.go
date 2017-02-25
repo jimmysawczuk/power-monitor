@@ -42,7 +42,7 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 	indexTmpl.Execute(w, map[string]interface{}{
 		"StartTime": startTime,
 		"Interval":  int64(activeMonitor.Interval / 1e6),
-		"Mode":      "Release",
+		"Mode":      "release",
 	})
 }
 
