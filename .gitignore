@@ -1,8 +1,6 @@
-web/static/bower/
 REVISION.json
 node_modules/
+web/static/bower/
 web/static/css/
 web/static/js/bin/
-
-# Utility script I use during development
-sync-to-gervais.bash
+web/static.go
