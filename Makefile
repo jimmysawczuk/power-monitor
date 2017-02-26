@@ -1,6 +1,11 @@
 define setup
+	rm -rf web/static/bower web/static/css web/static/js/bin node_modules
 	go get -u github.com/jimmysawczuk/scm-status/...
 	go get -u github.com/jteeuwen/go-bindata/...
+
+	yarn
+	bower install
+	grunt
 endef
 
 define clean
@@ -9,10 +14,7 @@ endef
 
 define build
 	@echo 'Building...'
-	go fmt ./...
 
-	# bower install
-	# grunt
 	scm-status -out=web/static/REVISION.json
 
 	go-bindata -debug -o web/static.go -pkg=web web/templates/... web/static/...
@@ -22,10 +24,6 @@ endef
 define release
 	@echo 'Building (release)...'
 
-	go fmt ./...
-
-	bower install
-	grunt
 	scm-status -out=web/static/REVISION.json
 
 	go-bindata -o web/static.go -pkg=web web/templates/... web/static/...

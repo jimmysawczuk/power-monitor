@@ -15,6 +15,7 @@ import (
 var activeMonitor *monitor.Monitor
 var startTime time.Time
 var indexTmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
+var releaseMode = "release"
 
 func GetRouter(m *monitor.Monitor) *mux.Router {
 	activeMonitor = m
@@ -49,7 +50,7 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 	indexTmpl.Execute(w, map[string]interface{}{
 		"StartTime": startTime,
 		"Interval":  int64(activeMonitor.Interval / 1e6),
-		"Mode":      "release",
+		"Mode":      releaseMode,
 	})
 }
 

@@ -247,7 +247,7 @@ function setRevision()
 	$.get('/REVISION.json', function(revision)
 	{
 		$('#revision')
-			.append("rev. " + revision.hex.short)
+			.append($('<a />', {href: "https://github.com/jimmysawczuk/power-monitor/commit/" + revision.hex.full}).html("rev. " + revision.hex.short))
 			.append(" &middot; ")
 			.append($('<time />', {datetime: revision.commit_date.iso8601}));
 
