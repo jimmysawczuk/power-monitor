@@ -15,7 +15,7 @@ import (
 var activeMonitor *monitor.Monitor
 var startTime time.Time
 var indexTmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
-var releaseMode = "debug"
+var releaseMode = "release"
 
 func GetRouter(m *monitor.Monitor) *mux.Router {
 	activeMonitor = m
