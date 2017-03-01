@@ -16,24 +16,33 @@ body {
 .navbar {
 	margin-bottom: 2em;
 	background: #333;
+	height: 60px;
 
 	.logo {
 		width: 100%;
 		text-align: center;
-		font-size: 16px;
-		line-height: 20px;
-		padding: 5px 0;
+		font-size: 18px;
+		line-height: 30px;
 		color: #f9f9f9;
 		font-weight: bold;
+		padding: 10px 0;
 
 		.fa {
-			border: 1px solid #ddd;
-			background: #eee;
-			color: #888;
-			width: 20px + 14px;
-			height: 20px + 14px;
+			border: 1px solid #333;
+			background: #ccff00;
+			color: #fff;
+			font-size: 25px;
 			border-radius: 20px;
-			padding: 7px 0;
+			height: 40px;
+			width: 40px;
+			padding: (40px - 25px) / 2 0;
+		}
+
+		span {
+			display: inline-block;
+			vertical-align: middle;
+			padding-bottom: 7px;
+			padding-left: 3px;
 		}
 	}
 }
@@ -47,7 +56,6 @@ body {
 	bottom: 0;
 	width: 100%;
 
-	/* Set the fixed height of the footer here */
 	height: 50px;
 	background-color: #f5f5f5;
 

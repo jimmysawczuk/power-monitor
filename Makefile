@@ -25,6 +25,7 @@ define release
 	@echo 'Building (release)...'
 
 	scm-status -out=web/static/REVISION.json
+	grunt
 
 	go-bindata -o web/static.go -pkg=web web/templates/... web/static/...
 	go install .

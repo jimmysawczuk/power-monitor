@@ -40,7 +40,7 @@ function humanizeDuration(d)
 
 function updateModel(snapshot)
 {
-	$('#model').html("Model " + snapshot.modelName);
+	$('#model').html("UPS Model: " + snapshot.modelName);
 }
 
 function updateBatteryRemaining(snapshot)
