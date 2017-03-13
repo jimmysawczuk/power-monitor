@@ -9,11 +9,21 @@ import (
 	"time"
 )
 
+const (
+	releaseModeRelease = "release"
+	releaseModeDebug   = "debug"
+)
+
+var releaseMode = releaseModeDebug
+
 func main() {
 	m := monitor.New(5 * time.Second)
 	go m.Start()
 
 	http.Handle("/", web.GetRouter(&m))
-	log.Println("Starting webserver")
+
+	listen := ":3000"
+
+	log.Printf("Starting web server in %s mode on %s", releaseMode, listen)
 	http.ListenAndServe(":3000", nil)
 }

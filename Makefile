@@ -18,7 +18,7 @@ define build
 	scm-status -out=web/static/REVISION.json
 
 	go-bindata -debug -o web/static.go -pkg=web web/templates/... web/static/...
-	go install .
+	go install -tags="debug" .
 endef
 
 define release
@@ -28,7 +28,7 @@ define release
 	grunt
 
 	go-bindata -o web/static.go -pkg=web web/templates/... web/static/...
-	go install .
+	go install -tags="release" .
 endef
 
 default: dev

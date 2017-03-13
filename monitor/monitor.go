@@ -1,7 +1,6 @@
 package monitor
 
 import (
-	"log"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -19,7 +18,6 @@ type Monitor struct {
 
 func init() {
 	dataRegexp = regexp.MustCompile(`\s{2,}?([\w ]+)\.{2,} (.+)`)
-	_ = log.Printf
 }
 
 func New(interval time.Duration) Monitor {
@@ -57,11 +55,12 @@ func (m Monitor) Active() bool {
 }
 
 func (m *Monitor) Exec() {
-	// log.Println("Logging")
 	s := m.getUPSSnapshot()
 
 	m.recent_snapshots = append([]Snapshot{s}, m.recent_snapshots...)
-	if max_size, slice_size := int64(48*time.Hour/m.Interval), int64(len(m.recent_snapshots)); slice_size > max_size {
+
+	// Keep last two weeks worth of snapshots
+	if max_size, slice_size := int64(14*24*time.Hour/m.Interval), int64(len(m.recent_snapshots)); slice_size > max_size {
 		m.recent_snapshots = m.recent_snapshots[0:max_size]
 	}
 }

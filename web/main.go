@@ -14,8 +14,19 @@ import (
 
 var activeMonitor *monitor.Monitor
 var startTime time.Time
-var indexTmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
-var releaseMode = "release"
+var indexTmpl *template.Template
+var releaseMode = releaseModeDebug
+
+const (
+	releaseModeRelease = "release"
+	releaseModeDebug   = "debug"
+)
+
+func init() {
+	if releaseMode == releaseModeRelease {
+		indexTmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
+	}
+}
 
 func GetRouter(m *monitor.Monitor) *mux.Router {
 	activeMonitor = m
@@ -47,7 +58,13 @@ func getStaticFile(w http.ResponseWriter, r *http.Request) {
 
 func getIndex(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
-	indexTmpl.Execute(w, map[string]interface{}{
+
+	tmpl := indexTmpl
+	if tmpl == nil {
+		tmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
+	}
+
+	tmpl.Execute(w, map[string]interface{}{
 		"StartTime": startTime,
 		"Interval":  int64(activeMonitor.Interval / 1e6),
 		"Mode":      releaseMode,
@@ -60,12 +77,32 @@ func getSnapshots(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 
 	recent := activeMonitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
-		res := isTimestampInLast(s.Timestamp, now, 60*time.Second) ||
-			(isTimestampInLast(s.Timestamp, now, 5*time.Minute) && isSignificantTimestamp(s.Timestamp, 10*time.Second)) ||
-			(isTimestampInLast(s.Timestamp, now, 2*time.Hour) && isSignificantTimestamp(s.Timestamp, 5*time.Minute)) ||
-			(isTimestampInLast(s.Timestamp, now, 48*time.Hour) && isSignificantTimestamp(s.Timestamp, 30*time.Minute))
 
-		return res
+		switch {
+		case now.Sub(s.Timestamp) < time.Minute:
+			return true
+
+		case now.Sub(s.Timestamp) < 5*time.Minute:
+			return isSignificantTimestamp(s.Timestamp, 10*time.Second)
+
+		case now.Sub(s.Timestamp) < 30*time.Minute:
+			return isSignificantTimestamp(s.Timestamp, 30*time.Second)
+
+		case now.Sub(s.Timestamp) < 2*time.Hour:
+			return isSignificantTimestamp(s.Timestamp, 5*time.Minute)
+
+		case now.Sub(s.Timestamp) < 2*24*time.Hour:
+			return isSignificantTimestamp(s.Timestamp, 1*time.Hour)
+
+		case now.Sub(s.Timestamp) < 4*24*time.Hour:
+			return isSignificantTimestamp(s.Timestamp, 2*time.Hour)
+
+		case now.Sub(s.Timestamp) < 7*24*time.Hour:
+			return isSignificantTimestamp(s.Timestamp, 4*time.Hour)
+
+		default:
+			return false
+		}
 	})
 
 	limit_str := r.FormValue("limit")
