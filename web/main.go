@@ -94,22 +94,22 @@ func getSnapshots(w http.ResponseWriter, r *http.Request) {
 			return true
 
 		case isTimestampInLast(startTime, now, 10*time.Minute):
-			return isSignificantTimestamp(s.Timestamp, 10*time.Second)
+			return isSignificantTimestamp(s.Timestamp, now, 10*time.Second)
 
 		case isTimestampInLast(startTime, now, 1*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, 30*time.Second)
+			return isSignificantTimestamp(s.Timestamp, now, 30*time.Second)
 
 		case isTimestampInLast(startTime, now, 6*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, 5*time.Minute)
+			return isSignificantTimestamp(s.Timestamp, now, 5*time.Minute)
 
 		case isTimestampInLast(startTime, now, 2*24*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, 30*time.Minute)
+			return isSignificantTimestamp(s.Timestamp, now, 30*time.Minute)
 
 		case isTimestampInLast(startTime, now, 4*24*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, 1*time.Hour)
+			return isSignificantTimestamp(s.Timestamp, now, 1*time.Hour)
 
 		case isTimestampInLast(s.Timestamp, now, 7*24*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, 3*time.Hour)
+			return isSignificantTimestamp(s.Timestamp, now, 3*time.Hour)
 
 		default:
 			return false
@@ -132,6 +132,6 @@ func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
 	return now.Sub(s) < dur
 }
 
-func isSignificantTimestamp(s time.Time, frequency time.Duration) bool {
-	return s.UnixNano()%int64(frequency) < int64(activeMonitor.Interval)
+func isSignificantTimestamp(s, now time.Time, frequency time.Duration) bool {
+	return (now.UnixNano()-s.UnixNano())%int64(frequency) < int64(activeMonitor.Interval)
 }
