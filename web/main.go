@@ -79,26 +79,26 @@ func getSnapshots(w http.ResponseWriter, r *http.Request) {
 	recent := activeMonitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
 
 		switch {
-		case now.Sub(s.Timestamp) < time.Minute:
+		case isTimestampInLast(startTime, now, time.Minute):
 			return true
 
-		case now.Sub(s.Timestamp) < 5*time.Minute:
+		case isTimestampInLast(startTime, now, 5*time.Minute):
 			return isSignificantTimestamp(s.Timestamp, 10*time.Second)
 
-		case now.Sub(s.Timestamp) < 30*time.Minute:
+		case isTimestampInLast(startTime, now, 30*time.Minute):
 			return isSignificantTimestamp(s.Timestamp, 30*time.Second)
 
-		case now.Sub(s.Timestamp) < 2*time.Hour:
+		case isTimestampInLast(startTime, now, 2*time.Hour):
 			return isSignificantTimestamp(s.Timestamp, 5*time.Minute)
 
-		case now.Sub(s.Timestamp) < 2*24*time.Hour:
+		case isTimestampInLast(startTime, now, 2*24*time.Hour):
+			return isSignificantTimestamp(s.Timestamp, 30*time.Minute)
+
+		case isTimestampInLast(startTime, now, 4*24*time.Hour):
 			return isSignificantTimestamp(s.Timestamp, 1*time.Hour)
 
-		case now.Sub(s.Timestamp) < 4*24*time.Hour:
-			return isSignificantTimestamp(s.Timestamp, 2*time.Hour)
-
-		case now.Sub(s.Timestamp) < 7*24*time.Hour:
-			return isSignificantTimestamp(s.Timestamp, 4*time.Hour)
+		case isTimestampInLast(s.Timestamp, now, 7*24*time.Hour):
+			return isSignificantTimestamp(s.Timestamp, 3*time.Hour)
 
 		default:
 			return false
