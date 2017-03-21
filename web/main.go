@@ -133,5 +133,5 @@ func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
 }
 
 func isSignificantTimestamp(s time.Time, frequency time.Duration) bool {
-	return (s.UnixNano()-time.Now().UnixNano())%int64(frequency) < int64(activeMonitor.Interval)
+	return s.UnixNano()%int64(frequency) < int64(activeMonitor.Interval)
 }
