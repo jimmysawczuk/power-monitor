@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jimmysawczuk/power-monitor/monitor"
 
+	"bytes"
 	"encoding/json"
 	"html/template"
 	"net/http"
@@ -64,10 +65,20 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 		tmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
 	}
 
+	var revision string
+	if rev, err := Asset("web/static/REVISION.json"); err != nil {
+		revision = "{}"
+	} else {
+		buf := &bytes.Buffer{}
+		json.Compact(buf, rev)
+		revision = buf.String()
+	}
+
 	tmpl.Execute(w, map[string]interface{}{
 		"StartTime": startTime,
 		"Interval":  int64(activeMonitor.Interval / 1e6),
 		"Mode":      releaseMode,
+		"Revision":  revision,
 	})
 }
 
@@ -79,16 +90,16 @@ func getSnapshots(w http.ResponseWriter, r *http.Request) {
 	recent := activeMonitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
 
 		switch {
-		case isTimestampInLast(startTime, now, time.Minute):
+		case isTimestampInLast(startTime, now, 3*time.Minute):
 			return true
 
-		case isTimestampInLast(startTime, now, 5*time.Minute):
+		case isTimestampInLast(startTime, now, 10*time.Minute):
 			return isSignificantTimestamp(s.Timestamp, 10*time.Second)
 
-		case isTimestampInLast(startTime, now, 30*time.Minute):
+		case isTimestampInLast(startTime, now, 1*time.Hour):
 			return isSignificantTimestamp(s.Timestamp, 30*time.Second)
 
-		case isTimestampInLast(startTime, now, 2*time.Hour):
+		case isTimestampInLast(startTime, now, 6*time.Hour):
 			return isSignificantTimestamp(s.Timestamp, 5*time.Minute)
 
 		case isTimestampInLast(startTime, now, 2*24*time.Hour):
@@ -122,5 +133,5 @@ func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
 }
 
 func isSignificantTimestamp(s time.Time, frequency time.Duration) bool {
-	return s.UnixNano()%int64(frequency) < int64(activeMonitor.Interval)
+	return (s.UnixNano()-startTime.UnixNano())%int64(frequency) < int64(activeMonitor.Interval)
 }

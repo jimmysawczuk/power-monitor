@@ -90,6 +90,7 @@
 	<script type="text/javascript">
 		var Interval = {{ .Interval }};
 		var StartTime = {{ .StartTime }};
+		var REVISION = JSON.parse({{ .Revision }});
 
 		Highcharts.setOptions({
 			chart: {

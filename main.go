@@ -22,8 +22,8 @@ func main() {
 
 	http.Handle("/", web.GetRouter(&m))
 
-	listen := ":3000"
+	listen := ":3001"
 
 	log.Printf("Starting web server in %s mode on %s", releaseMode, listen)
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(listen, nil)
 }
