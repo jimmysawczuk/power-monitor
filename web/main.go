@@ -5,6 +5,8 @@ import (
 	"github.com/jimmysawczuk/power-monitor/monitor"
 
 	"bytes"
+	"compress/gzip"
+	"context"
 	"encoding/json"
 	"html/template"
 	"net/http"
@@ -34,9 +36,9 @@ func GetRouter(m *monitor.Monitor) *mux.Router {
 	startTime = time.Now()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", getIndex)
-	r.HandleFunc("/api/snapshots", getSnapshots)
-	r.PathPrefix("/").HandlerFunc(getStaticFile)
+	r.HandleFunc("/", http.HandlerFunc(getIndex).ServeHTTP)
+	r.HandleFunc("/api/snapshots", http.HandlerFunc(getSnapshots).ServeHTTP)
+	r.PathPrefix("/").HandlerFunc(http.HandlerFunc(getStaticFile).ServeHTTP)
 	return r
 }
 func getStaticFile(w http.ResponseWriter, r *http.Request) {
@@ -53,13 +55,23 @@ func getStaticFile(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/javascript")
 	}
 
+	if compression := r.Context().Value("compression"); compression != nil {
+		switch compression {
+		case "gzip":
+			w.Header().Set("Content-Encoding", "gzip")
+			w.WriteHeader(200)
+			gz := gzip.NewWriter(w)
+			gz.Write(by)
+			gz.Close()
+			return
+		}
+	}
+
 	w.WriteHeader(200)
 	w.Write(by)
 }
 
 func getIndex(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
-
 	tmpl := indexTmpl
 	if tmpl == nil {
 		tmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
@@ -74,6 +86,8 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 		revision = buf.String()
 	}
 
+	w.Header().Set("Content-Type", "text/html; charset=utf8")
+	w.WriteHeader(200)
 	tmpl.Execute(w, map[string]interface{}{
 		"StartTime": startTime,
 		"Interval":  int64(activeMonitor.Interval / 1e6),
@@ -86,45 +100,54 @@ func getSnapshots(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	now := time.Now()
+	var recent monitor.SnapshotSlice
 
-	recent := activeMonitor.GetRecentSnapshots().Filter(func(s monitor.Snapshot) bool {
+	switch {
+	case isTimestampInLast(startTime, now, 3*time.Minute):
+		recent = activeMonitor.GetRecentSnapshots().Rollup(1 * time.Second)
 
-		switch {
-		case isTimestampInLast(startTime, now, 3*time.Minute):
-			return true
+	case isTimestampInLast(startTime, now, 10*time.Minute):
+		recent = activeMonitor.GetRecentSnapshots().Rollup(10 * time.Second)
 
-		case isTimestampInLast(startTime, now, 10*time.Minute):
-			return isSignificantTimestamp(s.Timestamp, now, 10*time.Second)
+	case isTimestampInLast(startTime, now, 1*time.Hour):
+		recent = activeMonitor.GetRecentSnapshots().Rollup(30 * time.Second)
 
-		case isTimestampInLast(startTime, now, 1*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, now, 30*time.Second)
+	case isTimestampInLast(startTime, now, 6*time.Hour):
+		recent = activeMonitor.GetRecentSnapshots().Rollup(5 * time.Minute)
 
-		case isTimestampInLast(startTime, now, 6*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, now, 5*time.Minute)
+	case isTimestampInLast(startTime, now, 2*24*time.Hour):
+		recent = activeMonitor.GetRecentSnapshots().Rollup(30 * time.Minute)
 
-		case isTimestampInLast(startTime, now, 2*24*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, now, 30*time.Minute)
+	case isTimestampInLast(startTime, now, 4*24*time.Hour):
+		recent = activeMonitor.GetRecentSnapshots().Rollup(1 * time.Hour)
 
-		case isTimestampInLast(startTime, now, 4*24*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, now, 1*time.Hour)
+	default:
+		recent = activeMonitor.GetRecentSnapshots().Rollup(3 * time.Hour)
+	}
 
-		case isTimestampInLast(s.Timestamp, now, 7*24*time.Hour):
-			return isSignificantTimestamp(s.Timestamp, now, 3*time.Hour)
-
-		default:
-			return false
+	if limitStr := r.FormValue("limit"); limitStr != "" {
+		limit, _ := strconv.ParseInt(limitStr, 10, 64)
+		if limit > 0 && limit < int64(len(recent)) {
+			recent = recent[0:limit]
 		}
-	})
-
-	limit_str := r.FormValue("limit")
-	limit, _ := strconv.ParseInt(limit_str, 10, 64)
-	if limit > 0 && limit < int64(len(recent)) {
-		recent = recent[0:limit]
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
 	by, _ := json.Marshal(recent)
+
+	if compression := r.Context().Value("compression"); compression != nil {
+		switch compression {
+		case "gzip":
+			w.Header().Set("Content-Encoding", "gzip")
+			w.WriteHeader(200)
+			gz := gzip.NewWriter(w)
+			gz.Write(by)
+			gz.Close()
+			return
+		}
+	}
+
+	w.WriteHeader(200)
 	w.Write(by)
 }
 
@@ -134,4 +157,16 @@ func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
 
 func isSignificantTimestamp(s, now time.Time, frequency time.Duration) bool {
 	return (now.UnixNano()-s.UnixNano())%int64(frequency) < int64(activeMonitor.Interval)
+}
+
+func tryGzip(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// to do: actually check for compression
+		compression := "gzip"
+
+		r = r.WithContext(context.WithValue(r.Context(), "compression", compression))
+
+		next.ServeHTTP(w, r)
+
+	})
 }

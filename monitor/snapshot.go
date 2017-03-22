@@ -53,6 +53,9 @@ type Snapshot struct {
 
 	// Unused
 	LineInteraction string `json:"lineInteraction"`
+
+	// How many data points this snapshot represents if it's a rolling average.
+	AverageOf int `json:"averageOf,omitempty"`
 }
 
 func (r rawSnapshot) Get(key string) (string, bool) {
