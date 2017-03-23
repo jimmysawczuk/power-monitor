@@ -24,6 +24,6 @@ func main() {
 
 	listen := ":3000"
 
-	log.Printf("Starting web server in %s mode on %s", releaseMode, listen)
+	log.Printf("Starting web server in %s mode on %s:", releaseMode, listen)
 	http.ListenAndServe(listen, nil)
 }

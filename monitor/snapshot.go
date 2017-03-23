@@ -1,7 +1,9 @@
 package monitor
 
 import (
+	"encoding/json"
 	"fmt"
+	// "math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -9,6 +11,14 @@ import (
 )
 
 type rawSnapshot map[string]string
+
+func (r rawSnapshot) Get(key string) (string, bool) {
+	if v, exists := r[key]; exists {
+		return v, true
+	} else {
+		return "", false
+	}
+}
 
 type SnapshotEvent struct {
 	Event    string        `json:"event"`
@@ -53,17 +63,76 @@ type Snapshot struct {
 
 	// Unused
 	LineInteraction string `json:"lineInteraction"`
-
-	// How many data points this snapshot represents if it's a rolling average.
-	AverageOf int `json:"averageOf,omitempty"`
 }
 
-func (r rawSnapshot) Get(key string) (string, bool) {
-	if v, exists := r[key]; exists {
-		return v, true
-	} else {
-		return "", false
-	}
+type SnapshotAverage struct {
+	// The average battery capacity remaining
+	BatteryRemaining float64
+
+	// The average load, in watts
+	Load float64
+
+	// The average battery capacity, in watts
+	BatteryCapacity float64
+
+	// The average output voltage, in volts
+	OutputVoltage float64
+
+	// The average utility voltage, in volts
+	UtilityVoltage float64
+
+	// The remaining runtime, in minutes
+	RemainingRuntime float64
+
+	// The most recent timestamp associated with the snapshots in this average
+	Timestamp time.Time
+
+	// The interval
+	Interval time.Duration
+
+	// How many data points this snapshot represents if it's a rolling average.
+	AverageOf int
+
+	Timestamps []time.Time
+}
+
+type float64prec struct {
+	val       float64
+	precision float64
+	fmtstr    string
+}
+
+func (f float64prec) MarshalJSON() ([]byte, error) {
+	v := f.val //math.Floor(f.val*(1/f.precision)+0.5) / f.precision
+	return []byte(fmt.Sprintf(f.fmtstr, v)), nil
+}
+
+func (s SnapshotAverage) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		BatteryRemaining float64prec `json:"batteryRemaining"`
+		Load             float64prec `json:"load"`
+		BatteryCapacity  float64prec `json:"batteryCapacity"`
+		OutputVoltage    float64prec `json:"outputVoltage"`
+		UtilityVoltage   float64prec `json:"utilityVoltage"`
+		RemainingRuntime float64prec `json:"remainingRuntime"`
+
+		Timestamp  time.Time     `json:"timestamp"`
+		Interval   time.Duration `json:"interval"`
+		AverageOf  int           `json:"averageOf"`
+		Timestamps []time.Time   `json:"timestamps"`
+	}{
+		BatteryRemaining: float64prec{val: s.BatteryRemaining, precision: 1e-4, fmtstr: "%0.4f"},
+		Load:             float64prec{val: s.Load, precision: 1e-4, fmtstr: "%0.4f"},
+		BatteryCapacity:  float64prec{val: s.BatteryCapacity, precision: 1e-4, fmtstr: "%0.4f"},
+		OutputVoltage:    float64prec{val: s.OutputVoltage, precision: 1e-4, fmtstr: "%0.4f"},
+		UtilityVoltage:   float64prec{val: s.UtilityVoltage, precision: 1e-4, fmtstr: "%0.4f"},
+		RemainingRuntime: float64prec{val: s.RemainingRuntime, precision: 1e-4, fmtstr: "%0.4f"},
+
+		Timestamp:  s.Timestamp,
+		Interval:   s.Interval,
+		AverageOf:  s.AverageOf,
+		Timestamps: s.Timestamps,
+	})
 }
 
 func NewFromRawSnapshot(raw rawSnapshot) (s Snapshot) {

@@ -1,31 +1,36 @@
 function update()
 {
-	$.get('/api/snapshots', function(snapshots)
+	$.get('/api/snapshots', function(response)
 	{
-		if (snapshots === null || snapshots.length == 0)
-		{
+		if (response === null || response.recent === null || response.latest === null) {
+			return;
+		}
+
+		var latest = response.latest;
+		var recent = response.recent;
+
+		if (recent.length === 0) {
 			return;
 		}
 
 		var now = +moment();
-		_.each(snapshots, function(snapshot, i)
-		{
-			snapshots[i].duration = now - +moment(snapshot.timestamp);
+		_.each(recent, function(snapshot, i) {
+			recent[i].duration = now - +moment(snapshot.timestamp);
 		});
 
-		updateModel(snapshots[0]);
+		updateModel(latest);
 
-		updateBatteryRemaining(snapshots[0]);
-		updateLoad(snapshots[0]);
-		updateRemainingRuntime(snapshots[0]);
-		updateUtilityVoltage(snapshots[0]);
+		updateBatteryRemaining(latest);
+		updateLoad(latest);
+		updateRemainingRuntime(latest);
+		updateUtilityVoltage(latest);
 
-		drawBatteryRemainingChart(snapshots);
-		drawLoadChart(snapshots);
-		drawRemainingRuntimeChart(snapshots);
-		drawUtilityVoltageChart(snapshots);
+		drawBatteryRemainingChart(recent);
+		drawLoadChart(recent);
+		drawRemainingRuntimeChart(recent);
+		drawUtilityVoltageChart(recent);
 
-		$('#last-updated').html('Last updated ').append($('<time />', {datetime: snapshots[0].timestamp}));
+		$('#last-updated').html('Last updated ').append($('<time />', {datetime: latest.timestamp}));
 
 		$('time').timeago();
 	}, 'json');
