@@ -4,6 +4,8 @@ import (
 	"github.com/jimmysawczuk/power-monitor/monitor"
 	"github.com/jimmysawczuk/power-monitor/web"
 
+	"crypto/tls"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -15,15 +17,27 @@ const (
 )
 
 var releaseMode = releaseModeDebug
+var port = 3000
 
 func main() {
 	m := monitor.New(5 * time.Second)
 	go m.Start()
 
-	http.Handle("/", web.GetRouter(&m))
+	listen := fmt.Sprintf(":%d", port)
 
-	listen := ":3000"
+	cert, _ := tls.X509KeyPair(
+		MustAsset("certificate.pem"),
+		MustAsset("key.pem"),
+	)
+
+	srv := &http.Server{
+		Addr:    listen,
+		Handler: web.GetRouter(&m),
+		TLSConfig: &tls.Config{
+			Certificates: []tls.Certificate{cert},
+		},
+	}
 
 	log.Printf("Starting web server in %s mode on %s:", releaseMode, listen)
-	http.ListenAndServe(listen, nil)
+	srv.ListenAndServeTLS("", "")
 }
