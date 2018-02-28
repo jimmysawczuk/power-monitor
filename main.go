@@ -26,8 +26,8 @@ func main() {
 	listen := fmt.Sprintf(":%d", port)
 
 	cert, _ := tls.X509KeyPair(
-		MustAsset("certificate.pem"),
-		MustAsset("key.pem"),
+		MustAsset("tls/certificate.pem"),
+		MustAsset("tls/key.pem"),
 	)
 
 	srv := &http.Server{
