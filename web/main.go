@@ -34,11 +34,14 @@ func GetRouter(m *monitor.Monitor) *mux.Router {
 	startTime = time.Now()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", handlers.CompressHandler(http.HandlerFunc(getIndex)).ServeHTTP)
-	r.HandleFunc("/api/snapshots", handlers.CompressHandler(http.HandlerFunc(getSnapshots)).ServeHTTP)
-	r.PathPrefix("/").HandlerFunc(handlers.CompressHandler(http.HandlerFunc(getStaticFile)).ServeHTTP)
+	r.Use(handlers.CompressHandler)
+
+	r.Methods(http.MethodGet).Path("/").Handler(http.HandlerFunc(getIndex))
+	r.Methods(http.MethodGet).Path("/api/snapshots").Handler(http.HandlerFunc(getSnapshots))
+	r.PathPrefix("/").Handler(http.HandlerFunc(getStaticFile))
 	return r
 }
+
 func getStaticFile(w http.ResponseWriter, r *http.Request) {
 	by, err := Asset("web/static" + r.URL.Path)
 	if err != nil {

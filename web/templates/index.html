@@ -10,15 +10,16 @@
 	<link rel="stylesheet" href="/css/style.min.css" type="text/css" />
 	{{ else }}
 	<link rel="stylesheet/less" href="/less/style.less" type="text/css" />
-	<script type="text/javascript" src="/bower/less/dist/less.min.js"></script>
+    <script type="text/javascript" src="/bower/less/dist/less.min.js"></script>
+    <script type="text/javascript" src="/fa/fontawesome-all.js"></script>
 	<script>less.watch(true);</script>
 	{{ end }}{{ end }}
 </head>
 <body>
 	<nav class="navbar navbar-default">
 		<div class="logo">
-			<i class="fa fa-bolt"></i>
-			<span>Power monitor</span>
+			<span class="brand"><i class="far fa-battery-bolt"></i></span>
+			<span class="title">Power monitor</span>
 		</div>
 	</nav>
 	<div class="container">
@@ -76,8 +77,8 @@
 		</div>
 	</footer>
 
-	{{ with $mode := .Mode }}{{ if eq $mode "release" }}
-	<script type="text/javascript" src="/js/bin/app.min.js"></script>
+	{{ with $mode := "release" }}{{ if eq $mode "release" }}
+	<script type="text/javascript" src="/js/bin/app.js"></script>
 	{{ else }}
 	<script type="text/javascript" src="/bower/underscore/underscore-min.js"></script>
 	<script type="text/javascript" src="/bower/jquery/dist/jquery.min.js"></script>
@@ -85,29 +86,12 @@
 	<script type="text/javascript" src="/bower/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/bower/moment/moment.js"></script>
 	<script type="text/javascript" src="/bower/timeago/jquery.timeago.js"></script>
-	<script type="text/javascript" src="/js/src/app.js"></script>
+    <script type="text/javascript" src="/js/src/app.js"></script>
 	{{ end }}{{ end }}
 	<script type="text/javascript">
 		var Interval = {{ .Interval }};
 		var StartTime = {{ .StartTime }};
-		var REVISION = JSON.parse({{ .Revision }});
-
-		Highcharts.setOptions({
-			chart: {
-				style: {
-					fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif'
-				}
-			}
-		});
-
-		$(document).ready(function()
-		{
-			window.setInterval(update, 30 * 1000);
-			update();
-
-			setMonitoringStartTime();
-			setRevision();
-		});
+        var REVISION = JSON.parse({{ .Revision }});
 	</script>
 </body>
 </html>
