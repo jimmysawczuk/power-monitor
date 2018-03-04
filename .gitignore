@@ -1,8 +1,8 @@
 REVISION.json
-node_modules/
-web/static/bower/
-web/static/css/
-web/static/js/bin/
-web/static.go
-tls/
-tls.go
+/node_modules/
+/.cache
+/web/static/bin/
+/web/static.go
+/tls/
+/tls.go
+

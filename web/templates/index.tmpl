@@ -6,19 +6,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Power monitor</title>
 
-	{{ with $mode := .Mode }}{{ if eq $mode "release" }}
-	<link rel="stylesheet" href="/css/style.min.css" type="text/css" />
-	{{ else }}
-	<link rel="stylesheet/less" href="/less/style.less" type="text/css" />
-    <script type="text/javascript" src="/bower/less/dist/less.min.js"></script>
-    <script type="text/javascript" src="/fa/fontawesome-all.js"></script>
-	<script>less.watch(true);</script>
-	{{ end }}{{ end }}
+	<link rel="stylesheet" href="/bin/app.css" type="text/css" />
 </head>
 <body>
 	<nav class="navbar navbar-default">
 		<div class="logo">
-			<span class="brand"><i class="far fa-battery-bolt"></i></span>
+			<span class="brand"><i class="fa fa-battery-bolt"></i></span>
 			<span class="title">Power monitor</span>
 		</div>
 	</nav>
@@ -77,21 +70,13 @@
 		</div>
 	</footer>
 
-	{{ with $mode := "release" }}{{ if eq $mode "release" }}
-	<script type="text/javascript" src="/js/bin/app.js"></script>
-	{{ else }}
-	<script type="text/javascript" src="/bower/underscore/underscore-min.js"></script>
-	<script type="text/javascript" src="/bower/jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript" src="/bower/highcharts/highcharts.js"></script>
-	<script type="text/javascript" src="/bower/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/bower/moment/moment.js"></script>
-	<script type="text/javascript" src="/bower/timeago/jquery.timeago.js"></script>
-    <script type="text/javascript" src="/js/src/app.js"></script>
-	{{ end }}{{ end }}
-	<script type="text/javascript">
-		var Interval = {{ .Interval }};
-		var StartTime = {{ .StartTime }};
-        var REVISION = JSON.parse({{ .Revision }});
+	<script src="/bin/app.js" type="text/javascript"></script>
+	<script>
+		startup(window, document, {
+			interval: {{ .Interval }},
+			startTime: {{ .StartTime }},
+			revision: JSON.parse({{ .Revision }}),
+		});
 	</script>
 </body>
 </html>

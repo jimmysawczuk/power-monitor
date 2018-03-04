@@ -1,11 +1,7 @@
 define setup
-	rm -rf web/static/bower web/static/css web/static/js/bin node_modules
 	go get -u github.com/jimmysawczuk/scm-status/...
 	go get -u github.com/jteeuwen/go-bindata/...
-
 	yarn
-	bower install
-	grunt
 endef
 
 define clean
@@ -17,6 +13,7 @@ define build
 
 	scm-status -out=web/static/REVISION.json
 
+	parcel build -o app.js -d web/static/bin --no-minify --detailed-report web/static/app.js
 	go-bindata -debug -o web/static.go -pkg=web web/templates/... web/static/...
 	go-bindata -debug -o tls.go -pkg=main tls/...
 	go install -tags="debug" .
@@ -26,8 +23,7 @@ define release
 	@echo 'Building (release)...'
 
 	scm-status -out=web/static/REVISION.json
-	grunt
-
+	parcel build -o app.js -d web/static/bin --detailed-report web/static/app.js
 	go-bindata -o web/static.go -pkg=web web/templates/... web/static/...
 	go-bindata -debug -o tls.go -pkg=main tls/...
 	go install -tags="release" .

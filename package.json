@@ -16,21 +16,18 @@
     "babel-core": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "bower": "^1.8.0",
-    "cssmin": "^0.4.3",
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-cssmin": "^0.12.2",
-    "grunt-contrib-less": "^1.0.0",
-    "grunt-contrib-uglify": "^0.9.1",
-    "less": "^2.4.0"
+    "eslint": "^4.18.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0"
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.4",
+    "bootstrap": "^3.3.0",
     "highcharts": "^6.0.7",
-    "jquery": "^3.3.1",
-    "moment": "^2.20.1",
-    "timeago": "^1.6.3"
+    "jquery-slim": "^3.0.0",
+    "less": "^3.0.1",
+    "moment": "^2.21.0",
+    "timeago.js": "^3.0.2",
+    "whatwg-fetch": "^2.0.3"
   }
 }

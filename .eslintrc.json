@@ -1,0 +1,9 @@
+{
+    "extends": "airbnb-base",
+    "rules": {
+        "indent": ["error", "tab"],
+        "no-tabs": "off",
+        "dot-location": "off",
+        "semi": "off"
+    }
+}

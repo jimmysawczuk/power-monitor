@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"html/template"
+	"log"
 	"net/http"
 	"path"
 	"time"
@@ -35,6 +36,7 @@ func GetRouter(m *monitor.Monitor) *mux.Router {
 
 	r := mux.NewRouter()
 	r.Use(handlers.CompressHandler)
+	r.Use(logRequest)
 
 	r.Methods(http.MethodGet).Path("/").Handler(http.HandlerFunc(getIndex))
 	r.Methods(http.MethodGet).Path("/api/snapshots").Handler(http.HandlerFunc(getSnapshots))
@@ -71,7 +73,7 @@ func getStaticFile(w http.ResponseWriter, r *http.Request) {
 func getIndex(w http.ResponseWriter, r *http.Request) {
 	tmpl := indexTmpl
 	if tmpl == nil {
-		tmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.html"))))
+		tmpl = template.Must(template.New("name").Parse(string(MustAsset("web/templates/index.tmpl"))))
 	}
 
 	var revision string
@@ -146,4 +148,22 @@ func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
 
 func isSignificantTimestamp(s, now time.Time, frequency time.Duration) bool {
 	return (now.UnixNano()-s.UnixNano())%int64(frequency) < int64(activeMonitor.Interval)
+}
+
+type loggableResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (l *loggableResponseWriter) WriteHeader(statusCode int) {
+	l.ResponseWriter.WriteHeader(statusCode)
+	l.statusCode = statusCode
+}
+
+func logRequest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		lw := &loggableResponseWriter{ResponseWriter: w}
+		next.ServeHTTP(lw, r)
+		log.Printf("[%d] %s %s", lw.statusCode, http.StatusText(lw.statusCode), r.RequestURI)
+	})
 }

@@ -18,9 +18,10 @@ const (
 
 var releaseMode = releaseModeDebug
 var port = 3000
+var interval = 30 * time.Second
 
 func main() {
-	m := monitor.New(5 * time.Second)
+	m := monitor.New(interval)
 	go m.Start()
 
 	listen := fmt.Sprintf(":%d", port)
