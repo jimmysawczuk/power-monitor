@@ -33,7 +33,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    listen,
-		Handler: web.GetRouter(&m),
+		Handler: web.GetRouter(m),
 		TLSConfig: &tls.Config{
 			Certificates: []tls.Certificate{cert},
 		},

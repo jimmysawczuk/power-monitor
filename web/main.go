@@ -89,7 +89,7 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	tmpl.Execute(w, map[string]interface{}{
 		"StartTime": startTime,
-		"Interval":  int64(activeMonitor.Interval / 1e6),
+		"Interval":  int64(activeMonitor.GetInterval() / 1e6),
 		"Mode":      releaseMode,
 		"Revision":  revision,
 	})
@@ -147,7 +147,7 @@ func isTimestampInLast(s, now time.Time, dur time.Duration) bool {
 }
 
 func isSignificantTimestamp(s, now time.Time, frequency time.Duration) bool {
-	return (now.UnixNano()-s.UnixNano())%int64(frequency) < int64(activeMonitor.Interval)
+	return (now.UnixNano()-s.UnixNano())%int64(frequency) < int64(activeMonitor.GetInterval())
 }
 
 type loggableResponseWriter struct {

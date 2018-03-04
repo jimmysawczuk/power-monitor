@@ -10,35 +10,33 @@ import (
 var dataRegexp *regexp.Regexp
 
 type Monitor struct {
-	Interval         time.Duration
-	engaged          bool
-	ticker           *time.Ticker
-	recent_snapshots []Snapshot
+	interval  time.Duration
+	engaged   bool
+	ticker    *time.Ticker
+	snapshots []Snapshot
 }
 
 func init() {
 	dataRegexp = regexp.MustCompile(`\s{2,}?([\w ]+)\.{2,} (.+)`)
 }
 
-func New(interval time.Duration) Monitor {
-	m := Monitor{
-		Interval: interval,
+func New(interval time.Duration) *Monitor {
+	return &Monitor{
+		interval: interval,
 	}
-
-	return m
 }
 
 func (m *Monitor) Start() {
-	m.ticker = time.NewTicker(m.Interval)
+	m.ticker = time.NewTicker(m.interval)
 	m.engaged = true
 
 	// Immediately grab a snapshot
-	m.Exec()
+	m.exec()
 
 	go func() {
 		for range m.ticker.C {
 			if m.engaged {
-				m.Exec()
+				m.exec()
 			}
 		}
 	}()
@@ -50,22 +48,22 @@ func (m *Monitor) Stop() {
 	m.ticker = nil
 }
 
-func (m Monitor) Active() bool {
+func (m *Monitor) Active() bool {
 	return m.engaged
 }
 
-func (m *Monitor) Exec() {
+func (m *Monitor) exec() {
 	s := m.getUPSSnapshot()
 
-	m.recent_snapshots = append([]Snapshot{s}, m.recent_snapshots...)
+	m.snapshots = append([]Snapshot{s}, m.snapshots...)
 
-	// Keep last two weeks worth of snapshots
-	if max_size, slice_size := int64(14*24*time.Hour/m.Interval), int64(len(m.recent_snapshots)); slice_size > max_size {
-		m.recent_snapshots = m.recent_snapshots[0:max_size]
+	// Keep last week's worth of snapshots
+	if maxSize, sliceSize := int64(7*24*time.Hour/m.interval), int64(len(m.snapshots)); sliceSize > maxSize {
+		m.snapshots = m.snapshots[0:maxSize]
 	}
 }
 
-func (m Monitor) getUPSSnapshot() Snapshot {
+func (m *Monitor) getUPSSnapshot() Snapshot {
 	cmd := exec.Command("pwrstat", "-status")
 
 	out, _ := cmd.Output()
@@ -82,6 +80,10 @@ func (m Monitor) getUPSSnapshot() Snapshot {
 	return snapshot
 }
 
-func (m Monitor) GetRecentSnapshots() SnapshotSlice {
-	return SnapshotSlice(m.recent_snapshots)
+func (m *Monitor) GetRecentSnapshots() SnapshotSlice {
+	return SnapshotSlice(m.snapshots)
+}
+
+func (m *Monitor) GetInterval() time.Duration {
+	return m.interval
 }
