@@ -1,17 +1,37 @@
 import highcharts from 'highcharts'
 import $ from 'jquery-slim'
-import timeago from 'timeago.js'
+import timeagoFactory from 'timeago.js'
 import moment from 'moment'
 import 'whatwg-fetch'
 import fontawesome from '@fortawesome/fontawesome'
 
 import './style.less'
 
+timeagoFactory.register('local', function(number, index) {
+	return [
+		['a moment ago', 'in a moment'],
+		['a moment ago', 'in a moment'],
+		['1 minute ago', 'in 1 minute'],
+		['%s minutes ago', 'in %s minutes'],
+		['1 hour ago', 'in 1 hour'],
+		['%s hours ago', 'in %s hours'],
+		['1 day ago', 'in 1 day'],
+		['%s days ago', 'in %s days'],
+		['1 week ago', 'in 1 week'],
+		['%s weeks ago', 'in %s weeks'],
+		['1 month ago', 'in 1 month'],
+		['%s months ago', 'in %s months'],
+		['1 year ago', 'in 1 year'],
+		['%s years ago', 'in %s years'],
+	][index]
+})
+
+const timeago = timeagoFactory()
+timeago.setLocale('local')
+
 fontawesome.library.add({
-	prefix:
-		'fa',
-	iconName:
-		'battery-bolt',
+	prefix: 'fa',
+	iconName: 'battery-bolt',
 	icon: [
 		640,
 		512,
@@ -31,41 +51,36 @@ highcharts.setOptions({
 })
 
 function humanizeDuration(d) {
-	return `${moment
-		.duration(
-			d,
-			'milliseconds',
-		)
-		.humanize()} ago`
+	return `${moment.duration(d, 'milliseconds').humanize()} ago`
 }
 
 function updateModel(snapshot) {
-	$('#model').html(`UPS Model: ${
-		snapshot.modelName
-	}`)
+	$('#model').html(`UPS Model: ${snapshot.modelName}`)
 }
 
 function updateBatteryRemaining(snapshot) {
-	$('#battery-remaining').html(`<h1>${snapshot.batteryRemaining *
-			100} %<small>Battery remaining</small></h1>`)
+	$('#battery-remaining').html(
+		`<h1>${snapshot.batteryRemaining *
+			100} %<small>Battery remaining</small></h1>`
+	)
 }
 
 function updateLoad(snapshot) {
-	$('#load').html(`<h1>${
-		snapshot.load
-	} W<small>Load</small></h1>`)
+	$('#load').html(`<h1>${snapshot.load} W<small>Load</small></h1>`)
 }
 
 function updateRemainingRuntime(snapshot) {
-	$('#remaining-runtime').html(`<h1>${
-		snapshot.remainingRuntime
-	} min.<small>Remaining runtime</small></h1>`)
+	$('#remaining-runtime').html(
+		`<h1>${
+			snapshot.remainingRuntime
+		} min.<small>Remaining runtime</small></h1>`
+	)
 }
 
 function updateUtilityVoltage(snapshot) {
-	$('#utility-voltage').html(`<h1>${
-		snapshot.utilityVoltage
-	} V<small>Utility voltage</small></h1>`)
+	$('#utility-voltage').html(
+		`<h1>${snapshot.utilityVoltage} V<small>Utility voltage</small></h1>`
+	)
 }
 
 function getDefaultChartOptions() {
@@ -73,8 +88,7 @@ function getDefaultChartOptions() {
 		xAxis: {
 			labels: {
 				formatter() {
-					return humanizeDuration(this
-						.value)
+					return humanizeDuration(this.value)
 				},
 			},
 		},
@@ -95,22 +109,17 @@ function getDefaultChartOptions() {
 
 function drawBatteryRemainingChart(snapshots) {
 	const data = []
-	snapshots.forEach((snapshot) => {
-		data.push([
-			snapshot.duration,
-			snapshot.batteryRemaining,
-		])
+	snapshots.forEach(snapshot => {
+		data.push([snapshot.duration, snapshot.batteryRemaining])
 	})
 
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo:
-					'battery-remaining-chart',
+			renderTo: 'battery-remaining-chart',
 		},
 		title: {
-			text:
-					'Battery remaining',
+			text: 'Battery remaining',
 		},
 
 		yAxis: {
@@ -118,9 +127,7 @@ function drawBatteryRemainingChart(snapshots) {
 			endOnTick: false,
 			labels: {
 				formatter() {
-					return `${100 *
-							this
-								.value}%`
+					return `${100 * this.value}%`
 				},
 			},
 			min: 0,
@@ -129,17 +136,13 @@ function drawBatteryRemainingChart(snapshots) {
 
 		tooltip: {
 			formatter() {
-				return `<b>${humanizeDuration(this
-					.x)}:</b> ${100 *
-						this
-							.y}%`
+				return `<b>${humanizeDuration(this.x)}:</b> ${100 * this.y}%`
 			},
 		},
 
 		series: [
 			{
-				name:
-						'Battery remaining',
+				name: 'Battery remaining',
 				data,
 			},
 		],
@@ -148,31 +151,23 @@ function drawBatteryRemainingChart(snapshots) {
 
 function drawLoadChart(snapshots) {
 	const data = []
-	snapshots.forEach((snapshot) => {
-		data.push([
-			snapshot.duration,
-			snapshot.load,
-		])
+	snapshots.forEach(snapshot => {
+		data.push([snapshot.duration, snapshot.load])
 	})
 
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo:
-					'load-chart',
+			renderTo: 'load-chart',
 		},
 		title: {
-			text:
-					'Load',
+			text: 'Load',
 		},
 		yAxis: {
 			endOnTick: true,
 			labels: {
 				formatter() {
-					return `${
-						this
-							.value
-					} W`
+					return `${this.value} W`
 				},
 			},
 			min: 0,
@@ -181,18 +176,13 @@ function drawLoadChart(snapshots) {
 
 		tooltip: {
 			formatter() {
-				return `<b>${humanizeDuration(this
-					.x)}:</b> ${
-					this
-						.y
-				} W`
+				return `<b>${humanizeDuration(this.x)}:</b> ${this.y} W`
 			},
 		},
 
 		series: [
 			{
-				name:
-						'Load',
+				name: 'Load',
 				data,
 			},
 		],
@@ -201,33 +191,25 @@ function drawLoadChart(snapshots) {
 
 function drawRemainingRuntimeChart(snapshots) {
 	const data = []
-	snapshots.forEach((snapshot) => {
-		data.push([
-			snapshot.duration,
-			snapshot.remainingRuntime,
-		])
+	snapshots.forEach(snapshot => {
+		data.push([snapshot.duration, snapshot.remainingRuntime])
 	})
 
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo:
-					'remaining-runtime-chart',
+			renderTo: 'remaining-runtime-chart',
 		},
 
 		title: {
-			text:
-					'Remaining runtime',
+			text: 'Remaining runtime',
 		},
 
 		yAxis: {
 			endOnTick: true,
 			labels: {
 				formatter() {
-					return `${
-						this
-							.value
-					} min`
+					return `${this.value} min`
 				},
 			},
 			min: 0,
@@ -235,18 +217,13 @@ function drawRemainingRuntimeChart(snapshots) {
 
 		tooltip: {
 			formatter() {
-				return `<b>${humanizeDuration(this
-					.x)}:</b> ${
-					this
-						.y
-				} min.`
+				return `<b>${humanizeDuration(this.x)}:</b> ${this.y} min.`
 			},
 		},
 
 		series: [
 			{
-				name:
-						'Remaining runtime',
+				name: 'Remaining runtime',
 				data,
 			},
 		],
@@ -255,33 +232,25 @@ function drawRemainingRuntimeChart(snapshots) {
 
 function drawUtilityVoltageChart(snapshots) {
 	const data = []
-	snapshots.forEach((snapshot) => {
-		data.push([
-			snapshot.duration,
-			snapshot.utilityVoltage,
-		])
+	snapshots.forEach(snapshot => {
+		data.push([snapshot.duration, snapshot.utilityVoltage])
 	})
 
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo:
-					'utility-voltage-chart',
+			renderTo: 'utility-voltage-chart',
 		},
 
 		title: {
-			text:
-					'Utility voltage',
+			text: 'Utility voltage',
 		},
 
 		yAxis: {
 			endOnTick: true,
 			labels: {
 				formatter() {
-					return `${
-						this
-							.value
-					} V`
+					return `${this.value} V`
 				},
 			},
 			min: 0,
@@ -289,18 +258,13 @@ function drawUtilityVoltageChart(snapshots) {
 
 		tooltip: {
 			formatter() {
-				return `<b>${humanizeDuration(this
-					.x)}:</b> ${
-					this
-						.y
-				} V`
+				return `<b>${humanizeDuration(this.x)}:</b> ${this.y} V`
 			},
 		},
 
 		series: [
 			{
-				name:
-						'Utility voltage',
+				name: 'Utility voltage',
 				data,
 			},
 		],
@@ -310,84 +274,55 @@ function drawUtilityVoltageChart(snapshots) {
 function setMonitoringStartTime(startTime) {
 	$('#started')
 		.append('Monitoring started ')
-		.append($(
-			'<time />',
-			{
+		.append(
+			$('<time />', {
 				datetime: startTime,
-			},
-		))
+			})
+		)
 
-	timeago().render($('time'))
+	timeago.render($('time'))
 }
 
 function setRevision(revision) {
 	$('#revision')
-		.append($(
-			'<a />',
-			{
+		.append(
+			$('<a />', {
 				href: `https://github.com/jimmysawczuk/power-monitor/commit/${
-					revision
-						.hex
-						.full
+					revision.hex.full
 				}`,
-			},
-		).html(`rev. ${
-			revision
-				.hex
-				.short
-		}`))
+			}).html(`rev. ${revision.hex.short}`)
+		)
 		.append(' &middot; ')
-		.append($(
-			'<time />',
-			{
-				datetime:
-						revision
-							.commit_date
-							.iso8601,
-			},
-		))
+		.append(
+			$('<time />', {
+				datetime: revision.commit_date.iso8601,
+			})
+		)
 
-	timeago().render($('time'))
+	timeago.render($('time'))
 }
 
 function update() {
 	fetch('/api/snapshots')
-		.then(response =>
-			response.json())
-		.then((response) => {
+		.then(response => response.json())
+		.then(response => {
 			if (
-				response ===
-						null ||
-					response.recent ===
-						null ||
-					response.latest ===
-						null
+				response === null ||
+				response.recent === null ||
+				response.latest === null
 			) {
 				return
 			}
 
-			const {
-				latest,
-				recent,
-			} = response
+			const { latest, recent } = response
 
-			if (
-				recent.length ===
-					0
-			) {
+			if (recent.length === 0) {
 				return
 			}
 
 			const now = +moment()
-			recent.forEach((
-				snapshot,
-				i,
-			) => {
-				recent[
-					i
-				].duration =
-							now -
-							+moment(snapshot.timestamp)
+			recent.forEach((snapshot, i) => {
+				recent[i].duration = now - +moment(snapshot.timestamp)
 			})
 
 			updateModel(latest)
@@ -404,32 +339,24 @@ function update() {
 
 			$('#last-updated')
 				.html('Last updated ')
-				.append($(
-					'<time />',
-					{
-						datetime:
-									latest.timestamp,
-					},
-				))
+				.append(
+					$('<time />', {
+						datetime: latest.timestamp,
+					})
+				)
 
-			timeago().render($('time'))
+			timeago.render($('time'))
 		})
 }
 
 function startup(window, document, opts) {
-	document.addEventListener(
-		'DOMContentLoaded',
-		() => {
-			window.setInterval(
-				update,
-				opts.interval,
-			)
-			update()
+	document.addEventListener('DOMContentLoaded', () => {
+		window.setInterval(update, opts.interval)
+		update()
 
-			setMonitoringStartTime(opts.startTime)
-			setRevision(opts.revision)
-		},
-	)
+		setMonitoringStartTime(opts.startTime)
+		setRevision(opts.revision)
+	})
 }
 
 if (typeof window !== 'undefined') {
