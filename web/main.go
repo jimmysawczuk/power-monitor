@@ -117,11 +117,8 @@ func getSnapshots(w http.ResponseWriter, r *http.Request) {
 	case isTimestampInLast(startTime, now, 2*24*time.Hour):
 		recent = snapshots.Rollup(30 * time.Minute)
 
-	case isTimestampInLast(startTime, now, 4*24*time.Hour):
-		recent = snapshots.Rollup(1 * time.Hour)
-
 	default:
-		recent = snapshots.Rollup(3 * time.Hour)
+		recent = snapshots.Rollup(1 * time.Hour)
 	}
 
 	var latest monitor.Snapshot
@@ -129,7 +126,7 @@ func getSnapshots(w http.ResponseWriter, r *http.Request) {
 		latest = snapshots[0]
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	by, _ := json.Marshal(struct {
 		Latest monitor.Snapshot             `json:"latest"`
 		Recent monitor.SnapshotAverageSlice `json:"recent"`
@@ -164,6 +161,11 @@ func logRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		lw := &loggableResponseWriter{ResponseWriter: w}
 		next.ServeHTTP(lw, r)
+
+		if lw.statusCode == 0 {
+			lw.statusCode = 200
+		}
+
 		log.Printf("[%d] %s %s", lw.statusCode, http.StatusText(lw.statusCode), r.RequestURI)
 	})
 }

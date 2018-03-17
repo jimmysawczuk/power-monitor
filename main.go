@@ -18,7 +18,7 @@ const (
 
 var releaseMode = releaseModeDebug
 var port = 3000
-var interval = 30 * time.Second
+var interval = 5 * time.Second
 
 func main() {
 	m := monitor.New(interval)
