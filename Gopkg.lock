@@ -2,25 +2,34 @@
 
 
 [[projects]]
+  digest = "1:dbd86d229eacaa86a98b10f8fb3e3fc69a1913e0f4e010e7cc1f92bf12edca92"
   name = "github.com/gorilla/context"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
   version = "v1.1"
 
 [[projects]]
+  digest = "1:4bfc2fa5a931ac13aa33633753f5fcb667dd6e558d3f0797275c80dda1cc5297"
   name = "github.com/gorilla/handlers"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "13d73096a474cac93275c679c7b8a2dc17ddba82"
 
 [[projects]]
+  digest = "1:eced3d718020962f1cc6ac109b840ba17dc817a291062b5948ba7aecc8c6665d"
   name = "github.com/gorilla/mux"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "53c1911da2b537f792e7cafcb446b05ffe33b996"
   version = "v1.6.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "08aa31f9c5427850b927e975ca9bc12f0bdecd23c97d71ba9c1c3538f3d702d3"
+  input-imports = [
+    "github.com/gorilla/handlers",
+    "github.com/gorilla/mux",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
