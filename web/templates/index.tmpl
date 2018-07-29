@@ -72,7 +72,7 @@
 
 	<script src="/bin/app.js" type="text/javascript"></script>
 	<script>
-		startup(window, document, {
+		PowerMonitor.startup(window, document, {
 			interval: {{ .Interval }},
 			startTime: {{ .StartTime }},
 			revision: JSON.parse({{ .Revision }}),

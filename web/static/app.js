@@ -1,43 +1,43 @@
-import highcharts from 'highcharts'
-import $ from 'jquery-slim'
-import timeagoFactory from 'timeago.js'
-import moment from 'moment'
-import 'whatwg-fetch'
-import fontawesome from '@fortawesome/fontawesome'
+import highcharts from "highcharts"
+import $ from "jquery-slim"
+import timeagoFactory from "timeago.js"
+import moment from "moment"
+import "whatwg-fetch"
+import fontawesome from "@fortawesome/fontawesome"
 
-import './style.less'
+import "./style.less"
 
-timeagoFactory.register('local', function(number, index) {
+timeagoFactory.register("local", function(number, index) {
 	return [
-		['a moment ago', 'in a moment'],
-		['a moment ago', 'in a moment'],
-		['1 minute ago', 'in 1 minute'],
-		['%s minutes ago', 'in %s minutes'],
-		['1 hour ago', 'in 1 hour'],
-		['%s hours ago', 'in %s hours'],
-		['1 day ago', 'in 1 day'],
-		['%s days ago', 'in %s days'],
-		['1 week ago', 'in 1 week'],
-		['%s weeks ago', 'in %s weeks'],
-		['1 month ago', 'in 1 month'],
-		['%s months ago', 'in %s months'],
-		['1 year ago', 'in 1 year'],
-		['%s years ago', 'in %s years'],
+		["a moment ago", "in a moment"],
+		["a moment ago", "in a moment"],
+		["1 minute ago", "in 1 minute"],
+		["%s minutes ago", "in %s minutes"],
+		["1 hour ago", "in 1 hour"],
+		["%s hours ago", "in %s hours"],
+		["1 day ago", "in 1 day"],
+		["%s days ago", "in %s days"],
+		["1 week ago", "in 1 week"],
+		["%s weeks ago", "in %s weeks"],
+		["1 month ago", "in 1 month"],
+		["%s months ago", "in %s months"],
+		["1 year ago", "in 1 year"],
+		["%s years ago", "in %s years"],
 	][index]
 })
 
 const timeago = timeagoFactory()
-timeago.setLocale('local')
+timeago.setLocale("local")
 
 fontawesome.library.add({
-	prefix: 'fa',
-	iconName: 'battery-bolt',
+	prefix: "fa",
+	iconName: "battery-bolt",
 	icon: [
 		640,
 		512,
 		[],
-		'f376',
-		'M64 352h178.778l-14.173 64H48c-26.51 0-48-21.49-48-48V144c0-26.51 21.49-48 48-48h115.944l-7.663 64H64v192zm364.778-160h-92.321l27.694-133.589C367.4 45.087 358.205 32 345.6 32H236.8c-9.623 0-17.76 7.792-19.031 18.225L192.171 264c-1.535 12.59 7.432 23.775 19.031 23.775h94.961l-36.847 166.382C266.44 467.443 275.728 480 287.993 480c6.68 0 13.101-3.827 16.623-10.481l140.778-245.997C452.79 209.55 443.564 192 428.778 192zM616 160h-8v-16c0-26.51-21.49-48-48-48H405.38l-9.951 48h33.349c16.112 0 31.233 5.762 43.115 16H544v64h32v64h-32v64H427.174l-36.626 64H560c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24z',
+		"f376",
+		"M64 352h178.778l-14.173 64H48c-26.51 0-48-21.49-48-48V144c0-26.51 21.49-48 48-48h115.944l-7.663 64H64v192zm364.778-160h-92.321l27.694-133.589C367.4 45.087 358.205 32 345.6 32H236.8c-9.623 0-17.76 7.792-19.031 18.225L192.171 264c-1.535 12.59 7.432 23.775 19.031 23.775h94.961l-36.847 166.382C266.44 467.443 275.728 480 287.993 480c6.68 0 13.101-3.827 16.623-10.481l140.778-245.997C452.79 209.55 443.564 192 428.778 192zM616 160h-8v-16c0-26.51-21.49-48-48-48H405.38l-9.951 48h33.349c16.112 0 31.233 5.762 43.115 16H544v64h32v64h-32v64H427.174l-36.626 64H560c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24z",
 	],
 })
 
@@ -51,35 +51,35 @@ highcharts.setOptions({
 })
 
 function humanizeDuration(d) {
-	return `${moment.duration(d, 'milliseconds').humanize()} ago`
+	return `${moment.duration(d, "milliseconds").humanize()} ago`
 }
 
 function updateModel(snapshot) {
-	$('#model').html(`UPS Model: ${snapshot.modelName}`)
+	$("#model").html(`UPS Model: ${snapshot.modelName}`)
 }
 
 function updateBatteryRemaining(snapshot) {
-	$('#battery-remaining').html(
+	$("#battery-remaining").html(
 		`<h1>${snapshot.batteryRemaining *
-			100} %<small>Battery remaining</small></h1>`
+			100} %<small>Battery remaining</small></h1>`,
 	)
 }
 
 function updateLoad(snapshot) {
-	$('#load').html(`<h1>${snapshot.load} W<small>Load</small></h1>`)
+	$("#load").html(`<h1>${snapshot.load} W<small>Load</small></h1>`)
 }
 
 function updateRemainingRuntime(snapshot) {
-	$('#remaining-runtime').html(
+	$("#remaining-runtime").html(
 		`<h1>${
 			snapshot.remainingRuntime
-		} min.<small>Remaining runtime</small></h1>`
+		} min.<small>Remaining runtime</small></h1>`,
 	)
 }
 
 function updateUtilityVoltage(snapshot) {
-	$('#utility-voltage').html(
-		`<h1>${snapshot.utilityVoltage} V<small>Utility voltage</small></h1>`
+	$("#utility-voltage").html(
+		`<h1>${snapshot.utilityVoltage} V<small>Utility voltage</small></h1>`,
 	)
 }
 
@@ -116,10 +116,10 @@ function drawBatteryRemainingChart(snapshots) {
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo: 'battery-remaining-chart',
+			renderTo: "battery-remaining-chart",
 		},
 		title: {
-			text: 'Battery remaining',
+			text: "Battery remaining",
 		},
 
 		yAxis: {
@@ -142,7 +142,7 @@ function drawBatteryRemainingChart(snapshots) {
 
 		series: [
 			{
-				name: 'Battery remaining',
+				name: "Battery remaining",
 				data,
 			},
 		],
@@ -158,10 +158,10 @@ function drawLoadChart(snapshots) {
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo: 'load-chart',
+			renderTo: "load-chart",
 		},
 		title: {
-			text: 'Load',
+			text: "Load",
 		},
 		yAxis: {
 			endOnTick: true,
@@ -182,7 +182,7 @@ function drawLoadChart(snapshots) {
 
 		series: [
 			{
-				name: 'Load',
+				name: "Load",
 				data,
 			},
 		],
@@ -198,11 +198,11 @@ function drawRemainingRuntimeChart(snapshots) {
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo: 'remaining-runtime-chart',
+			renderTo: "remaining-runtime-chart",
 		},
 
 		title: {
-			text: 'Remaining runtime',
+			text: "Remaining runtime",
 		},
 
 		yAxis: {
@@ -223,7 +223,7 @@ function drawRemainingRuntimeChart(snapshots) {
 
 		series: [
 			{
-				name: 'Remaining runtime',
+				name: "Remaining runtime",
 				data,
 			},
 		],
@@ -239,11 +239,11 @@ function drawUtilityVoltageChart(snapshots) {
 	highcharts.chart({
 		...getDefaultChartOptions(),
 		chart: {
-			renderTo: 'utility-voltage-chart',
+			renderTo: "utility-voltage-chart",
 		},
 
 		title: {
-			text: 'Utility voltage',
+			text: "Utility voltage",
 		},
 
 		yAxis: {
@@ -264,7 +264,7 @@ function drawUtilityVoltageChart(snapshots) {
 
 		series: [
 			{
-				name: 'Utility voltage',
+				name: "Utility voltage",
 				data,
 			},
 		],
@@ -272,38 +272,38 @@ function drawUtilityVoltageChart(snapshots) {
 }
 
 function setMonitoringStartTime(startTime) {
-	$('#started')
-		.append('Monitoring started ')
+	$("#started")
+		.append("Monitoring started ")
 		.append(
-			$('<time />', {
+			$("<time />", {
 				datetime: startTime,
-			})
+			}),
 		)
 
-	timeago.render($('time'))
+	timeago.render($("time"))
 }
 
 function setRevision(revision) {
-	$('#revision')
+	$("#revision")
 		.append(
-			$('<a />', {
+			$("<a />", {
 				href: `https://github.com/jimmysawczuk/power-monitor/commit/${
 					revision.hex.full
 				}`,
-			}).html(`rev. ${revision.hex.short}`)
+			}).html(`rev. ${revision.hex.short}`),
 		)
-		.append(' &middot; ')
+		.append(" &middot; ")
 		.append(
-			$('<time />', {
-				datetime: revision.commit_date.iso8601,
-			})
+			$("<time />", {
+				datetime: revision.date,
+			}),
 		)
 
-	timeago.render($('time'))
+	timeago.render($("time"))
 }
 
 function update() {
-	fetch('/api/snapshots')
+	fetch("/api/snapshots")
 		.then(response => response.json())
 		.then(response => {
 			if (
@@ -337,28 +337,24 @@ function update() {
 			drawRemainingRuntimeChart(recent)
 			drawUtilityVoltageChart(recent)
 
-			$('#last-updated')
-				.html('Last updated ')
+			$("#last-updated")
+				.html("Last updated ")
 				.append(
-					$('<time />', {
+					$("<time />", {
 						datetime: latest.timestamp,
-					})
+					}),
 				)
 
-			timeago.render($('time'))
+			timeago.render($("time"))
 		})
 }
 
-function startup(window, document, opts) {
-	document.addEventListener('DOMContentLoaded', () => {
+export function startup(window, document, opts) {
+	document.addEventListener("DOMContentLoaded", () => {
 		window.setInterval(update, opts.interval)
 		update()
 
 		setMonitoringStartTime(opts.startTime)
 		setRevision(opts.revision)
 	})
-}
-
-if (typeof window !== 'undefined') {
-	window.startup = startup
 }
