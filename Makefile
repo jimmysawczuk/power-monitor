@@ -5,8 +5,7 @@ define setup
 endef
 
 define clean
-	@rm -rf web/static/bin
-	@rm -f web/static.go
+	rm -rf web/static/bin web/static.go tls.go tls/
 endef
 
 define build
@@ -26,8 +25,8 @@ define release
 	scm-status -out=web/static/REVISION.json
 	parcel build --global PowerMonitor -o app.js --public-url /bin -d web/static/bin ./web/static/app.js
 	go-bindata -o web/static.go -pkg=web web/templates/... web/static/...
-	go-bindata -debug -o tls.go -pkg=main tls/...
-	go install -tags="release" .
+	go-bindata -o tls.go -pkg=main tls/...
+	GOOS=linux go build -tags="release" -o pm .
 endef
 
 default: dev
@@ -42,9 +41,8 @@ dev:
 clean:
 	@$(clean)
 
-release:
-	@$(clean)
-	@$(release)
+release: clean tls
+	$(release)
 
 tls:
 	mkdir -p tls
