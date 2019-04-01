@@ -53,9 +53,10 @@ func getStaticFile(w http.ResponseWriter, r *http.Request) {
 
 	types := map[string]string{
 		".css":   "text/css",
-		".js":    "application/javascript",
 		".eot":   "application/vnd.ms-fontobject",
+		".js":    "application/javascript",
 		".otf":   "application/font-sfnt",
+		".png":   "image/png",
 		".svg":   "image/svg+xml",
 		".ttf":   "application/font-sfnt",
 		".woff":  "application/font-woff",
