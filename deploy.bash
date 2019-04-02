@@ -27,7 +27,7 @@ for GOOS in linux; do
 		fi
 
 		echo "$GOOS/$GOARCH" && echo "----------------------------";
-		GOOS=$GOOS GOARCH=$GOARCH go build -v -o $APPNAME $MAINPKG
+		GOOS=$GOOS GOARCH=$GOARCH go build -tags="release" -v -o $APPNAME $MAINPKG
 
 		# if this is the host OS/arch, the exe is put in the root of bin rather than a subdirectory
 		if [[ $GOOS == $GOHOSTOS ]] && [[ $GOARCH == $GOHOSTARCH ]]; then
