@@ -13,11 +13,10 @@
   },
   "homepage": "https://github.com/jimmysawczuk/power-monitor",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "cssnano": "^4.0.4",
-    "parcel-bundler": "^1.12"
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "parcel-bundler": "^1.12.3"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
@@ -27,5 +26,8 @@
     "less": "^3.0.1",
     "timeago.js": "^3.0.2",
     "whatwg-fetch": "^2.0.3"
+  },
+  "scripts": {
+    "build": "parcel build --detailed-report --global PowerMonitor -o app.js --public-url /bin -d web/static/bin --no-minify ./web/static/app.js"
   }
 }
