@@ -4,5 +4,6 @@ REVISION.json
 /web/static/bin/
 /web/static.go
 /tls/
-/tls.go
+/cmd/power-monitor/tls.go
+/deploy/
 

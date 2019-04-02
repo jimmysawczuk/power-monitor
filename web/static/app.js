@@ -1,9 +1,8 @@
 import highcharts from "highcharts"
-import $ from "jquery-slim"
 import timeagoFactory from "timeago.js"
-import moment from "moment"
 import "whatwg-fetch"
 import fontawesome from "@fortawesome/fontawesome"
+import { distanceInWords } from "date-fns"
 
 import "./style.less"
 
@@ -51,36 +50,38 @@ highcharts.setOptions({
 })
 
 function humanizeDuration(d) {
-	return `${moment.duration(d, "milliseconds").humanize()} ago`
+	return `${distanceInWords(+new Date(), +new Date() - d)} ago`
 }
 
 function updateModel(snapshot) {
-	$("#model").html(`UPS Model: ${snapshot.modelName}`)
+	document.getElementById("model").innerHTML = `UPS Model: ${
+		snapshot.modelName
+	}`
 }
 
 function updateBatteryRemaining(snapshot) {
-	$("#battery-remaining").html(
-		`<h1>${snapshot.batteryRemaining *
-			100} %<small>Battery remaining</small></h1>`,
-	)
+	document.getElementById(
+		"battery-remaining",
+	).innerHTML = `<h1>${snapshot.batteryRemaining *
+		100} %<small>Battery remaining</small></h1>`
 }
 
 function updateLoad(snapshot) {
-	$("#load").html(`<h1>${snapshot.load} W<small>Load</small></h1>`)
+	document.getElementById("load").innerHTML = `<h1>${
+		snapshot.load
+	} W<small>Load</small></h1>`
 }
 
 function updateRemainingRuntime(snapshot) {
-	$("#remaining-runtime").html(
-		`<h1>${
-			snapshot.remainingRuntime
-		} min.<small>Remaining runtime</small></h1>`,
-	)
+	document.getElementById("remaining-runtime").innerHTML = `<h1>${
+		snapshot.remainingRuntime
+	} min.<small>Remaining runtime</small></h1>`
 }
 
 function updateUtilityVoltage(snapshot) {
-	$("#utility-voltage").html(
-		`<h1>${snapshot.utilityVoltage} V<small>Utility voltage</small></h1>`,
-	)
+	document.getElementById("utility-voltage").innerHTML = `<h1>${
+		snapshot.utilityVoltage
+	} V<small>Utility voltage</small></h1>`
 }
 
 function getDefaultChartOptions() {
@@ -272,34 +273,23 @@ function drawUtilityVoltageChart(snapshots) {
 }
 
 function setMonitoringStartTime(startTime) {
-	$("#started")
-		.append("Monitoring started ")
-		.append(
-			$("<time />", {
-				datetime: startTime,
-			}),
-		)
+	document.getElementById(
+		"started",
+	).innerHTML = `Monitoring started <time datetime="${startTime}" />`
 
-	timeago.render($("time"))
+	timeago.render(document.getElementsByTagName("time"))
 }
 
 function setRevision(revision) {
-	$("#revision")
-		.append(
-			$("<a />", {
-				href: `https://github.com/jimmysawczuk/power-monitor/commit/${
-					revision.hex.full
-				}`,
-			}).html(`rev. ${revision.hex.short}`),
-		)
-		.append(" &middot; ")
-		.append(
-			$("<time />", {
-				datetime: revision.date,
-			}),
-		)
+	document.getElementById(
+		"revision",
+	).innerHTML = `<a href="https://github.com/jimmysawczuk/power-monitor/commit/${
+		revision.hex.full
+	}">rev ${revision.hex.short}</a> &middot; <time datetime="${
+		revision.date
+	}" />`
 
-	timeago.render($("time"))
+	timeago.render(document.getElementsByTagName("time"))
 }
 
 function update() {
@@ -320,9 +310,9 @@ function update() {
 				return
 			}
 
-			const now = +moment()
+			const now = +new Date()
 			recent.forEach((snapshot, i) => {
-				recent[i].duration = now - +moment(snapshot.timestamp)
+				recent[i].duration = now - +new Date(snapshot.timestamp)
 			})
 
 			updateModel(latest)
@@ -337,15 +327,11 @@ function update() {
 			drawRemainingRuntimeChart(recent)
 			drawUtilityVoltageChart(recent)
 
-			$("#last-updated")
-				.html("Last updated ")
-				.append(
-					$("<time />", {
-						datetime: latest.timestamp,
-					}),
-				)
+			document.getElementById(
+				"last-updated",
+			).innerHTML = `Last updated <time datetime="${latest.timestamp}" />`
 
-			timeago.render($("time"))
+			timeago.render(document.getElementsByTagName("time"))
 		})
 }
 

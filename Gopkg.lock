@@ -2,27 +2,20 @@
 
 
 [[projects]]
-  digest = "1:dbd86d229eacaa86a98b10f8fb3e3fc69a1913e0f4e010e7cc1f92bf12edca92"
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
-  digest = "1:4bfc2fa5a931ac13aa33633753f5fcb667dd6e558d3f0797275c80dda1cc5297"
+  digest = "1:2a26f9d34f80b0e53dc2d1526649a26d017f5dcd99576f863cb9d3c2021feec3"
   name = "github.com/gorilla/handlers"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "13d73096a474cac93275c679c7b8a2dc17ddba82"
+  revision = "7e0847f9db758cdebd26c149d0ae9d5d0b9c98ce"
+  version = "v1.4.0"
 
 [[projects]]
-  digest = "1:eced3d718020962f1cc6ac109b840ba17dc817a291062b5948ba7aecc8c6665d"
+  digest = "1:f9c7b395f10bd6d881b1f2d71715906b4481a04e46870cdd2647d50caa3358c2"
   name = "github.com/gorilla/mux"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "53c1911da2b537f792e7cafcb446b05ffe33b996"
-  version = "v1.6.1"
+  revision = "a7962380ca08b5a188038c69871b8d3fbdf31e89"
+  version = "v1.7.0"
 
 [solve-meta]
   analyzer-name = "dep"
