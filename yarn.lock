@@ -2826,9 +2826,10 @@ hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
 
-highcharts@^6.0.7:
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.0.7.tgz#fd5c4f24fdc61a04ae155a5b70830a96c8f70919"
+highcharts@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.1.0.tgz#115a6ee10ad36a53d9913f1030c6d46da16c7cb5"
+  integrity sha512-YZotALyZD1xJixB8pNOKqBpmxV/NrOpMHQ3l7/CMB1hn5U7KRSviaeyv8/1MT7/rTgEFPOW85mdaFKFr2EfeAw==
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
