@@ -42,3 +42,12 @@ func main() {
 	log.Printf("Starting web server in %s mode on %s:", releaseMode, listen)
 	srv.ListenAndServeTLS("", "")
 }
+
+func MustAsset(name string) []byte {
+	asset, err := Asset(name)
+	if err != nil {
+		panic(err)
+	}
+
+	return asset
+}

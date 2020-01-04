@@ -170,3 +170,12 @@ func logRequest(next http.Handler) http.Handler {
 		log.Printf("[%d] %s %s", lw.statusCode, http.StatusText(lw.statusCode), r.RequestURI)
 	})
 }
+
+func MustAsset(name string) []byte {
+	asset, err := Asset(name)
+	if err != nil {
+		panic(err)
+	}
+
+	return asset
+}
