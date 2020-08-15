@@ -1,9 +1,3 @@
 REVISION.json
-/node_modules/
-/.cache
-/web/static/bin/
-/web/static.go
-/tls/
-/cmd/power-monitor/tls.go
-/deploy/
-
+/frontend
+/cmd/power-monitor/static.go
