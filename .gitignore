@@ -1,3 +1,4 @@
 REVISION.json
 /frontend
 /cmd/power-monitor/static.go
+/power-monitor

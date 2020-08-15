@@ -4,8 +4,7 @@ set -e
 
 rm -rf frontend
 git clone git@github.com:jimmysawczuk/power-monitor-web.git frontend
-cd frontend && yarn && yarn build
-cd ..
+(cd frontend && yarn && yarn build)
 
 go-bindata -o ./cmd/power-monitor/static.go -pkg main -prefix frontend/public frontend/public/...
 
