@@ -46,6 +46,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.WithField("revision", revision).WithField("version", version).Info("starting up")
+
 	startTime = time.Now()
 
 	mon = monitor.New(cfg.MonitorInterval)
