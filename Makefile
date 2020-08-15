@@ -1,11 +1,7 @@
 define setup
 	go get -u github.com/jimmysawczuk/scm-status/...
+	go get -u github.com/jimmysawczuk/tmpl/...
 	go get -u github.com/jteeuwen/go-bindata/...
-	yarn
-endef
-
-define clean
-	rm -rf web/static/bin web/static.go tls.go tls/ deploy/
 endef
 
 define build
@@ -20,12 +16,7 @@ endef
 
 define release
 	@echo 'Building (release)...'
-
-	scm-status -out=web/static/REVISION.json
-	npm run build
-	go-bindata -o web/static.go -pkg=web web/templates/... web/static/...
-	go-bindata -o cmd/power-monitor/tls.go -pkg=main tls/...
-	go build -tags="release" ./...
+	./deploy/release.bash
 endef
 
 default: dev
@@ -36,10 +27,7 @@ setup:
 dev: tls
 	$(build)
 
-clean:
-	$(clean)
-
-release: clean tls
+release:
 	$(release)
 
 tls:
