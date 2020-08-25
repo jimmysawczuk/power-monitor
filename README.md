@@ -1,7 +1,7 @@
 # power-monitor
 [![Go Report Card](https://goreportcard.com/badge/github.com/jimmysawczuk/power-monitor)](https://goreportcard.com/report/github.com/jimmysawczuk/power-monitor)
 
-![Screenshot](https://i.imgur.com/9FDRr83.png)
+![Screenshot](/screenshot.png)
 
 ## Setting up
 You'll need to set up [PowerPanel for Linux](https://www.cyberpowersystems.com/product/software/powerpanel-for-linux/) on a server that's connected via USB to a CyberPower UPS.
