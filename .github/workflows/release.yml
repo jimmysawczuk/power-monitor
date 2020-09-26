@@ -22,14 +22,15 @@ jobs:
           ref: ${{ github.ref }}
       - name: Install tools
         run: |
+          export PATH=~/bin:$PATH
+
           wget -q https://github.com/jimmysawczuk/tmpl/releases/download/v2.0.0/tmpl-v2.0.0-linux-amd64
-          echo $PATH
-          mv tmpl-v2.0.0-linux-amd64 /usr/local/bin/tmpl
-          sudo chmod +x $GOPATH/bin/tmpl
+          mv tmpl-v2.0.0-linux-amd64 ~/bin/tmpl
+          sudo chmod +x ~/bin/tmpl
 
           wget -q https://github.com/jimmysawczuk/scm-status/releases/download/v2.2.0/scm-status-v2.2.0-linux-amd64
-          mv scm-status-v2.2.0-linux-amd64 /usr/local/bin/scm-status
-          chmod +x $GOPATH/bin/scm-status
+          mv scm-status-v2.2.0-linux-amd64 ~/bin/scm-status
+          chmod +x ~/bin/scm-status
 
           go get -u github.com/jimmysawczuk/go-bindata/go-bindata
       - name: Set NPM Auth
