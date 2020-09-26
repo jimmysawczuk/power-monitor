@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          env
+          cat $GITHUB_EVENT_PATH
       - uses: actions/checkout@v2
       - uses: actions/checkout@v2
         with:
@@ -28,7 +28,7 @@ jobs:
           export PATH=~/bin:$PATH
           echo "::set-env name=PATH::$PATH"
       - name: Install tools
-        working-directory: ~
+        working-directory: ~/tmp
         run: |
           wget -q https://github.com/jimmysawczuk/tmpl/releases/download/v2.0.0/tmpl-v2.0.0-linux-amd64
           mv tmpl-v2.0.0-linux-amd64 ~/bin/tmpl
