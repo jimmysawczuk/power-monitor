@@ -36,8 +36,9 @@ jobs:
           chmod +x ~/bin/scm-status
 
           go get -u github.com/jimmysawczuk/go-bindata/go-bindata
-          echo $GOPATH
+          echo "GOPATH=$GOPATH"
           ls ~/go/bin
+          ls -lha
           which go-bindata
       - name: Set NPM Auth
         run: |
