@@ -13,6 +13,9 @@ jobs:
           repository: jimmysawczuk/power-monitor-web
           ref: master
           path: frontend
+      - name: Install tools
+        run: |
+          go install ./...
       - name: Set NPM Auth
         run: |
           echo '@fortawesome:registry=https://npm.fontawesome.com/' > ~/.npmrc
@@ -24,7 +27,14 @@ jobs:
           yarn build
       - name: Packaging static assets
         run: |
-          go get -u github.com/jteeuwen/go-bindata/...
           go-bindata -o ./cmd/power-monitor/static.go -pkg main -prefix frontend/public frontend/public/...
+      - name: Build binary
+        run: |
+          BUILDTAGS="-X main.version=$(scm-status | jq -r 'if .tags | length == 0 then "" else .tags[0] end') -X main.revision=$(scm-status | jq -r '.hex.short') -X main.date=$(date --iso-8601=seconds)"
 
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+            go build -a -o power-monitor \
+            -ldflags "-s -d -w $BUILDTAGS" \
+            -mod=vendor \
+            ./cmd/power-monitor
 
