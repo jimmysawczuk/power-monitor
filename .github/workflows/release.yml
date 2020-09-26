@@ -1,0 +1,26 @@
+name: Release
+on:
+  release:
+    types: [created]
+jobs:
+  build_release:
+    name: Build release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: jimmysawczuk/power-monitor-web
+          ref: master
+          path: frontend
+      - name: Building frontend
+        working-directory: frontend
+        run: |
+          yarn
+          yarn build
+      - name: Packaging static assets
+        run: |
+          go get -u github.com/jteeuwen/go-bindata/...
+          go-bindata -o ./cmd/power-monitor/static.go -pkg main -prefix frontend/public frontend/public/...
+
+
