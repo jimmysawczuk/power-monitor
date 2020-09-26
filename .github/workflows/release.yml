@@ -36,10 +36,7 @@ jobs:
           chmod +x ~/bin/scm-status
 
           go get -u github.com/jimmysawczuk/go-bindata/go-bindata
-          echo "GOPATH=$GOPATH"
-          ls ~/go/bin
-          ls -lha
-          which go-bindata
+          mv ~/go/bin/go-bindata ~/bin/go-bindata
       - name: Set NPM Auth
         run: |
           echo '@fortawesome:registry=https://npm.fontawesome.com/' > ~/.npmrc
