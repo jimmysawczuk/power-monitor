@@ -22,11 +22,12 @@ jobs:
           ref: ${{ github.ref }}
       - name: Install tools
         run: |
-          wget https://github.com/jimmysawczuk/tmpl/releases/download/v2.0.0/tmpl-v2.0.0-linux-amd64
+          wget -q https://github.com/jimmysawczuk/tmpl/releases/download/v2.0.0/tmpl-v2.0.0-linux-amd64
+          echo $PATH
           mv tmpl-v2.0.0-linux-amd64 /usr/local/bin/tmpl
-          chmod +x $GOPATH/bin/tmpl
+          sudo chmod +x $GOPATH/bin/tmpl
 
-          wget https://github.com/jimmysawczuk/scm-status/releases/download/v2.2.0/scm-status-v2.2.0-linux-amd64
+          wget -q https://github.com/jimmysawczuk/scm-status/releases/download/v2.2.0/scm-status-v2.2.0-linux-amd64
           mv scm-status-v2.2.0-linux-amd64 /usr/local/bin/scm-status
           chmod +x $GOPATH/bin/scm-status
 
