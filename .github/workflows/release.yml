@@ -33,6 +33,9 @@ jobs:
           mv scm-status-v2.2.0-linux-amd64 ~/bin/scm-status
           chmod +x ~/bin/scm-status
 
+          which scm-status
+          which tmpl
+
           go get -u github.com/jimmysawczuk/go-bindata/go-bindata
       - name: Set NPM Auth
         run: |
