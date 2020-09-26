@@ -13,6 +13,10 @@ jobs:
           repository: jimmysawczuk/power-monitor-web
           ref: master
           path: frontend
+      - name: Set NPM Auth
+        run: |
+          echo '@fortawesome:registry=https://npm.fontawesome.com/' > ~/.npmrc
+          echo '//npm.fontawesome.com/:_authToken=${{ secrets.FONTAWESOME_AUTH_TOKEN }}' >> ~/.npmrc
       - name: Building frontend
         working-directory: frontend
         run: |
