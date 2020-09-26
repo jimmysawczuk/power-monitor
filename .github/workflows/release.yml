@@ -9,6 +9,8 @@ jobs:
     name: Build release
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          echo '${{ github.event }}'
       - uses: actions/checkout@v2
       - uses: actions/checkout@v2
         with:
@@ -59,4 +61,14 @@ jobs:
             -ldflags "-s -d -w $BUILDTAGS" \
             -mod=vendor \
             ./cmd/power-monitor
+      - name: Upload build (linux, amd64)
+        if: ${{ github.event_name == 'release' }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./power-monitor-${{ steps.tag.outputs.tag }}-linux-amd64
+          asset_name: power-monitor-${{ steps.tag.outputs.tag }}-linux-amd64
+          asset_content_type: application/octet-stream
 
