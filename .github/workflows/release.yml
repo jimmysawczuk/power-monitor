@@ -61,6 +61,7 @@ jobs:
         id: get_upload_url
         run: |
           UPLOAD_URL=$(cat $GITHUB_EVENT_PATH | jq '.release.upload_url')
+          echo $UPLOAD_URL
           echo "::set-output name=uploadURL::$UPLOAD_URL"
       - name: Upload build (linux, amd64)
         if: ${{ github.event_name == 'release' }}
