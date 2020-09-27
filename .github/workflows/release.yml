@@ -53,13 +53,11 @@ jobs:
       - name: Build binary
         run: |
           BUILDTAGS="-X main.version=$(scm-status | jq -r 'if .tags | length == 0 then "" else .tags[0] end') -X main.revision=$(scm-status | jq -r '.hex.short') -X main.date=$(date --iso-8601=seconds)"
+          echo $BUILDTAGS
 
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-            go build -a -o power-monitor \
-            -ldflags "-s -d -w $BUILDTAGS" \
-            -mod=vendor \
-            ./cmd/power-monitor
-      - if: ${{ github.event_name == 'release' }}
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o power-monitor-${{ steps.tag.outputs.tag }}-linux-amd64 -ldflags "-s -d -w $BUILDTAGS" -mod=vendor ./cmd/power-monitor
+      - name: Get upload URL
+        if: ${{ github.event_name == 'release' }}
         id: get_upload_url
         run: |
           UPLOAD_URL=$(cat $GITHUB_EVENT_PATH | jq '.release.upload_url')
