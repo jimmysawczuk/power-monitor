@@ -24,7 +24,7 @@ jobs:
         run: |
           mkdir -p ~/bin
           export PATH=~/bin:$PATH
-          echo "::set-env name=PATH::$PATH"
+          echo "~/bin" >> $GITHUB_PATH
       - name: Install tools
         run: |
           wget -q https://github.com/jimmysawczuk/tmpl/releases/download/v2.0.0/tmpl-v2.0.0-linux-amd64
